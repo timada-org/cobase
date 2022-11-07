@@ -1,0 +1,48 @@
+map $http_x_forwarded_proto $proxy_x_forwarded_proto {
+  default $http_x_forwarded_proto;
+  ''      $scheme;
+}
+
+map $http_x_forwarded_port $proxy_x_forwarded_port {
+  default $http_x_forwarded_port;
+  ''      $server_port;
+}
+
+map $http_upgrade $proxy_connection {
+  default upgrade;
+  '' close;
+}
+
+map $scheme $proxy_x_forwarded_ssl {
+  default off;
+  https off;
+}
+
+server {
+  listen 80 default_server;
+
+  location ^~ /@vite {
+    include /etc/nginx/proxy.conf;
+    proxy_pass            http://host.docker.internal:3010;
+  }
+
+  location /__vite_ping {
+    include /etc/nginx/proxy.conf;
+    proxy_pass            http://host.docker.internal:3010;
+  }
+
+  location /src {
+    include /etc/nginx/proxy.conf;
+    proxy_pass            http://host.docker.internal:3010;
+  }
+
+  location /node_modules {
+    include /etc/nginx/proxy.conf;
+    proxy_pass            http://host.docker.internal:3010;
+  }
+
+  location / {
+    include /etc/nginx/proxy.conf;
+    proxy_pass            http://host.docker.internal:3010;
+  }
+}

@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  cobase-web:
+    image: nginx:1.23-alpine
+    volumes:
+      - ./.docker/nginx/templates:/etc/nginx/templates
+      - ./.docker/nginx/proxy.conf:/etc/nginx/proxy.conf
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cobase-web.rule=Host(`cobase.timada.localhost`)"
+      - "traefik.http.routers.cobase-web.tls=true"
+      - "traefik.http.routers.cobase-web.entrypoints=https"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - intranet
+
+  cobase-cockroach-init:
+    image: cockroachdb/cockroach:v22.1.10
+    command: >
+      sql --insecure --host="cockroach" --execute="
+        CREATE DATABASE IF NOT EXISTS cobase;
+        CREATE USER IF NOT EXISTS cobase; GRANT ALL ON DATABASE cobase TO cobase WITH GRANT OPTION;
+      "
+    restart: on-failure
+    networks:
+      - intranet
+
+networks:
+  intranet:
+    name: timada
+    external: true
