@@ -1,8 +1,8 @@
 mod aggregate;
-mod api;
 mod command;
 mod event;
+mod http;
 mod projection;
 
-pub use api::scope;
+pub use http::scope;
 pub use projection::start;
