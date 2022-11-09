@@ -10,7 +10,7 @@ use uuid::Uuid;
 
 use crate::error::Error;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CommandInfo {
     pub aggregate_id: String,
     pub original_version: i32,
@@ -76,17 +76,18 @@ pub struct CommandMetadata {
     pub zone: String,
 }
 
+#[derive(Clone, Debug)]
 pub struct CommandResponse(pub Result<CommandResult, MailboxError>);
 
 impl CommandResponse {
     pub async fn to_response<A: Aggregate>(
-        self,
+        &self,
         zone: &str,
         store: &EventStore<PgEngine>,
         producer: &mut Producer<TokioExecutor>,
         payload: JwtPayload,
     ) -> Result<HttpResponse, Error> {
-        let info = self.0??;
+        let info = self.0.clone()??;
         let mut events = Vec::new();
         let request_id = Uuid::new_v4().to_string();
 

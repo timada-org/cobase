@@ -4,10 +4,10 @@ use thiserror::Error as ThisError;
 use tracing::log::error;
 use validator::ValidationErrors;
 
-#[derive(ThisError, Debug)]
+#[derive(ThisError, Debug, Clone)]
 pub enum Error {
     #[error("internal server error")]
-    InternalServerError(String),
+    InternalServerErr(String),
 
     #[error("{0}")]
     BadRequest(String),
@@ -25,7 +25,7 @@ impl Error {
 impl ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match *self {
-            Error::InternalServerError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Error::InternalServerErr(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Error::BadRequest(_) => StatusCode::BAD_REQUEST,
             Error::NotFound(_, _) => StatusCode::NOT_FOUND,
         }
@@ -34,7 +34,7 @@ impl ResponseError for Error {
     fn error_response(&self) -> HttpResponse {
         let mut res = HttpResponseBuilder::new(self.status_code());
 
-        if let Error::InternalServerError(e) = self {
+        if let Error::InternalServerErr(e) = self {
             error!("{}", e);
         }
 
@@ -52,30 +52,30 @@ impl From<ValidationErrors> for Error {
 
 impl From<serde_json::Error> for Error {
     fn from(e: serde_json::Error) -> Self {
-        Error::InternalServerError(e.to_string())
+        Error::InternalServerErr(e.to_string())
     }
 }
 
 impl From<actix::MailboxError> for Error {
     fn from(e: actix::MailboxError) -> Self {
-        Error::InternalServerError(e.to_string())
+        Error::InternalServerErr(e.to_string())
     }
 }
 
 impl From<pulsar::Error> for Error {
     fn from(e: pulsar::Error) -> Self {
-        Error::InternalServerError(e.to_string())
+        Error::InternalServerErr(e.to_string())
     }
 }
 
 impl From<evento::Error> for Error {
     fn from(e: evento::Error) -> Self {
-        Error::InternalServerError(e.to_string())
+        Error::InternalServerErr(e.to_string())
     }
 }
 
 impl From<mongodb::error::Error> for Error {
     fn from(e: mongodb::error::Error) -> Self {
-        Error::InternalServerError(e.to_string())
+        Error::InternalServerErr(e.to_string())
     }
 }
