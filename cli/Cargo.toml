@@ -1,0 +1,19 @@
+[package]
+name = "cli"
+version ="0.0.0"
+edition = "2021"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+api = { path = "../api" ,version ="0.0.0"}
+
+config = "0.13.2"
+serde = "1.0.147"
+serde_json = "1.0.87"
+clap = "4.0.19"
+actix-rt = "2.7.0"
+sqlx = { version = "0.6", features = ["runtime-actix-rustls", "postgres", "chrono", "uuid", "json"] }
+tracing = "0.1.37"
+tracing-subscriber = "0.3.16"

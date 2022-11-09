@@ -1,0 +1,17 @@
+zone: eu-west-3
+listen: "0.0.0.0:3011"
+
+jwks:
+  url: http://admin.oathkeeper.localhost:4456/.well-known/jwks.json
+
+pikav:
+  url: http://pikav.localhost:6750
+  namespace: cobase
+
+database:
+  read: mongodb://timada:alphadeltaomega@127.0.0.1:27017
+  write: cockroach://cobase@127.0.0.1:26257
+
+pulsar:
+  url: pulsar://127.0.0.1:6650
+  namespace: non-persistent://public/default
