@@ -3,7 +3,7 @@ use config::{Config, ConfigError, Environment, File};
 use serde::Deserialize;
 use sqlx::{Executor, PgPool};
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 pub struct Migrate {
     pub database: DatabaseOptions,
 }

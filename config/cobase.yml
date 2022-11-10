@@ -15,3 +15,10 @@ database:
 pulsar:
   url: pulsar://127.0.0.1:6650
   namespace: non-persistent://public/default
+
+openapi:
+  servers:
+    - url: /api/cobase
+
+swagger_ui:
+  url: /api/cobase/openapi.json

@@ -1,10 +1,12 @@
 use evento::Aggregate;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 use super::event::{Created, GroupEvent};
 
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize, ToSchema)]
 pub struct Group {
+    #[schema(example = "Transquadra")]
     pub name: String,
 }
 

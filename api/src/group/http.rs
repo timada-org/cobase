@@ -12,6 +12,12 @@ use crate::AppState;
 use super::aggregate::Group;
 use super::command::CreateCommand;
 
+#[utoipa::path(
+    context_path = "/groups",
+    responses(
+        (status = 200, description = "Get groups did not result error", body = [Vec<Group>]),
+    )
+)]
 #[get("")]
 async fn find_all(state: web::Data<AppState>, payload: JwtPayload) -> Result<HttpResponse, Error> {
     let collection = state.read_db.collection::<Group>("groups");
@@ -26,6 +32,13 @@ async fn find_all(state: web::Data<AppState>, payload: JwtPayload) -> Result<Htt
     Ok(HttpResponse::Ok().json(groups))
 }
 
+#[utoipa::path(
+    context_path = "/groups",
+    request_body=CreateCommand,
+    responses(
+        (status = 200, description = "Create group did not result error", body = [Group]),
+    )
+)]
 #[post("/create")]
 async fn create(
     state: web::Data<AppState>,
