@@ -29,7 +29,7 @@ impl OpenApiCmd {
         let openapi = ApiDoc::openapi()
             .to_json()
             .expect("failed to create api doc");
-        let path = Path::new("../openapi.json");
+        let path = Path::new("openapi.json");
         let display = path.display();
 
         // Open a file in write-only mode, returns `io::Result<File>`
