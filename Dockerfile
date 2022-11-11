@@ -1,7 +1,7 @@
 FROM gcr.io/distroless/cc
 
 COPY ./target/release/cli /usr/bin/cobase
-COPY .cli/migrations .
+COPY ./cli/migrations .
 
 EXPOSE 80
 
