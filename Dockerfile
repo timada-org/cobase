@@ -1,6 +1,6 @@
 FROM gcr.io/distroless/cc
 
-COPY ./target/release/cobase-cli /usr/bin/cobase
+COPY ./target/release/cli /usr/bin/cobase
 
 EXPOSE 80
 
