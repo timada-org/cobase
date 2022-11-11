@@ -3,6 +3,7 @@ name: Deploy
 #   push:
 #     tags:
 #       - '*'
+
 on: pull_request
 
 jobs:
