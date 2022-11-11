@@ -1,8 +1,10 @@
 mod migrate;
+mod openapi;
 mod serve;
 
 use clap::{arg, Command};
 use migrate::Migrate;
+use openapi::OpenApiCmd;
 use serve::Serve;
 
 fn cli() -> Command {
@@ -16,6 +18,11 @@ fn cli() -> Command {
         .subcommand(
             Command::new("migrate")
                 .about("Migrate codebase database")
+                .arg(arg!(-c --config <CONFIG>).required(false)),
+        )
+        .subcommand(
+            Command::new("openapi")
+                .about("Generate openapi doc")
                 .arg(arg!(-c --config <CONFIG>).required(false)),
         )
 }
@@ -41,6 +48,20 @@ async fn main() {
         }
         Some(("migrate", sub_matches)) => {
             let s = match Migrate::new(
+                sub_matches
+                    .get_one::<String>("config")
+                    .unwrap_or(&"".to_owned()),
+            ) {
+                Ok(s) => s,
+                Err(e) => panic!("{e}"),
+            };
+
+            if let Err(e) = s.run().await {
+                panic!("{e}");
+            }
+        }
+        Some(("openapi", sub_matches)) => {
+            let s = match OpenApiCmd::new(
                 sub_matches
                     .get_one::<String>("config")
                     .unwrap_or(&"".to_owned()),

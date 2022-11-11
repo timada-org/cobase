@@ -4,6 +4,8 @@ mod group;
 mod openapi;
 mod projection;
 
+pub use openapi::ApiDoc;
+
 use actix::{Actor, Addr};
 use actix_jwks::JwksClient;
 use actix_web::{

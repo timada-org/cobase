@@ -4,7 +4,11 @@ branches:
 plugins:
   - "@semantic-release/commit-analyzer"
   - "@semantic-release/release-notes-generator"
-  - "@semantic-release/github"
+  - path: "@semantic-release/exec"
+    prepareCmd: "pnpm openapi"
+  - path: "@semantic-release/github"
+    assets:
+      - openapi.json
   - "@timada/semantic-release-cargo"
   - path: "@semantic-release/exec"
     prepareCmd: "cargo update"

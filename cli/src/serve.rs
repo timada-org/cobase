@@ -1,7 +1,8 @@
 use std::str::FromStr;
 
 use api::{
-    App, AppOptions, DatabaseOptions, JwksOptions, OpenApiOptions, PikavOptions, PulsarOptions, SwaggerUIOptions,
+    App, AppOptions, DatabaseOptions, JwksOptions, OpenApiOptions, PikavOptions, PulsarOptions,
+    SwaggerUIOptions,
 };
 use config::{Config, ConfigError, Environment, File};
 use serde::Deserialize;
