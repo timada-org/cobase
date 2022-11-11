@@ -15,7 +15,7 @@ use super::command::CreateCommand;
 #[utoipa::path(
     context_path = "/groups",
     responses(
-        (status = 200, description = "Get groups did not result error", body = [Vec<Group>]),
+        (status = 200, description = "Get groups did not result error", body = [Group]),
     )
 )]
 #[get("")]
