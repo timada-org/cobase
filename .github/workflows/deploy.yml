@@ -1,14 +1,12 @@
 name: Deploy
-# on:
-#   push:
-#     tags:
-#       - '*'
-
-on: pull_request
+on:
+  push:
+    tags:
+      - '*'
 
 jobs:
   rust:
-    uses: timada-org/.github/.github/workflows/rust-deploy.yml@feat/rust-deploy
+    uses: timada-org/.github/.github/workflows/rust-deploy.yml@v2
     with:
       image: timada0/cobase
     secrets:
