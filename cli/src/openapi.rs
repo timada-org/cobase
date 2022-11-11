@@ -33,7 +33,7 @@ impl OpenApiCmd {
         let display = path.display();
 
         // Open a file in write-only mode, returns `io::Result<File>`
-        let mut file = match std::fs::File::create(&path) {
+        let mut file = match std::fs::File::create(path) {
             Err(why) => panic!("couldn't create {}: {}", display, why),
             Ok(file) => file,
         };
