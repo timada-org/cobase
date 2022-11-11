@@ -1,7 +1,10 @@
 mod command;
 mod error;
 mod group;
+mod openapi;
 mod projection;
+
+pub use openapi::ApiDoc;
 
 use actix::{Actor, Addr};
 use actix_jwks::JwksClient;
@@ -19,6 +22,8 @@ use sqlx::PgPool;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use tracing::log::error;
+use utoipa::{openapi::Server, OpenApi};
+use utoipa_swagger_ui::SwaggerUi;
 
 pub struct AppState {
     pub zone: String,
@@ -28,27 +33,37 @@ pub struct AppState {
     pub group_producer: Arc<Mutex<Producer<TokioExecutor>>>,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Deserialize, Clone)]
 pub struct JwksOptions {
     pub url: String,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Deserialize, Clone)]
 pub struct PikavOptions {
     pub url: String,
     pub namespace: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Deserialize, Clone)]
 pub struct PulsarOptions {
     pub url: String,
     pub namespace: String,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Deserialize, Clone)]
 pub struct DatabaseOptions {
     pub read: String,
     pub write: String,
+}
+
+#[derive(Deserialize, Clone)]
+pub struct OpenApiOptions {
+    pub servers: Option<Vec<Server>>,
+}
+
+#[derive(Deserialize, Clone)]
+pub struct SwaggerUIOptions {
+    pub url: String,
 }
 
 pub struct AppOptions {
@@ -58,6 +73,8 @@ pub struct AppOptions {
     pub pikav: PikavOptions,
     pub database: DatabaseOptions,
     pub pulsar: PulsarOptions,
+    pub openapi: OpenApiOptions,
+    pub swagger_ui: SwaggerUIOptions,
 }
 
 pub struct App {
@@ -129,6 +146,11 @@ impl App {
 
         let cmd = Command::new(pool.clone()).start();
 
+        let mut openapi = openapi::ApiDoc::openapi();
+        openapi.servers = self.options.openapi.servers.clone();
+
+        let swagger_ui_url = self.options.swagger_ui.url.to_owned();
+
         HttpServer::new(move || {
             ActixApp::new()
                 .app_data(web::Data::new(AppState {
@@ -139,7 +161,13 @@ impl App {
                     read_db: read_db.clone(),
                 }))
                 .app_data(Data::new(jwks_client.clone()))
+                .app_data(Data::new(openapi.clone()))
                 .service(group::scope())
+                .service(openapi::service)
+                .service(
+                    SwaggerUi::new("/swagger-ui/{_:.*}")
+                        .url(swagger_ui_url.to_owned(), openapi.clone()),
+                )
         })
         .bind(self.options.listen.to_owned())?
         .run()

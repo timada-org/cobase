@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "cargo run serve -c ../config/cobase.yml",
-    "migrate": "cargo run migrate -c ../config/cobase.yml"
+    "migrate": "cargo run migrate -c ../config/cobase.yml",
+    "openapi": "cargo run openapi -c ../config/cobase.yml"
   },
   "keywords": [],
   "author": "",

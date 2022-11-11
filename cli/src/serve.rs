@@ -1,11 +1,14 @@
 use std::str::FromStr;
 
-use api::{App, AppOptions, DatabaseOptions, JwksOptions, PikavOptions, PulsarOptions};
+use api::{
+    App, AppOptions, DatabaseOptions, JwksOptions, OpenApiOptions, PikavOptions, PulsarOptions,
+    SwaggerUIOptions,
+};
 use config::{Config, ConfigError, Environment, File};
 use serde::Deserialize;
 use tracing::Level;
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 pub struct Serve {
     pub zone: String,
     pub listen: String,
@@ -13,6 +16,8 @@ pub struct Serve {
     pub pikav: PikavOptions,
     pub database: DatabaseOptions,
     pub pulsar: PulsarOptions,
+    pub openapi: OpenApiOptions,
+    pub swagger_ui: SwaggerUIOptions,
     pub log: Option<String>,
 }
 
@@ -48,6 +53,8 @@ impl Serve {
             jwks: self.jwks.clone(),
             pikav: self.pikav.clone(),
             pulsar: self.pulsar.clone(),
+            openapi: self.openapi.clone(),
+            swagger_ui: self.swagger_ui.clone(),
             database,
         });
 

@@ -4,5 +4,7 @@ mod event;
 mod http;
 mod projection;
 
-pub use http::scope;
+pub use aggregate::Group;
+pub use command::*;
+pub use http::*;
 pub use projection::start;

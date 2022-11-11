@@ -2,12 +2,13 @@ use actix::{ActorFutureExt, Context, Handler, Message, ResponseActFuture, WrapFu
 use evento::Event;
 use nanoid::nanoid;
 use serde::Deserialize;
+use utoipa::{IntoParams, ToSchema};
 
 use crate::command::{Command, CommandInfo, CommandResult};
 
 use super::event::{Created, GroupEvent};
 
-#[derive(Message, Deserialize)]
+#[derive(Message, Deserialize, IntoParams, ToSchema)]
 #[serde(rename_all = "camelCase")]
 #[rtype(result = "CommandResult")]
 pub struct CreateCommand {
