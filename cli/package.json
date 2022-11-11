@@ -1,6 +1,7 @@
 {
   "name": "cli",
   "version": "0.0.0",
+  "private": true,
   "scripts": {
     "dev": "cargo run serve -c ../config/cobase.yml",
     "migrate": "cargo run migrate -c ../config/cobase.yml",

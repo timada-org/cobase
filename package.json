@@ -1,7 +1,7 @@
 {
   "name": "cobase",
   "version": "0.0.0",
-  "private": "true",
+  "private": true,
   "scripts": {
     "dev": "pnpm --stream --parallel --filter cli --filter web dev",
     "openapi": "pnpm --stream --parallel --filter cli openapi"
