@@ -1,0 +1,14 @@
+# on:
+#   push:
+#     tags:
+#       - '*'
+on: pull_request
+
+jobs:
+  deploy:
+    uses: timada-org/.github/.github/workflows/rust-deploy.yml@feat/rust-deploy
+    with:
+      image: timada0/cobase
+    secrets:
+      DOCKER_REGISTRY_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
+      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
