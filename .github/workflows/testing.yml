@@ -19,7 +19,7 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           repository: timada-org/sdk
           event-type: released
-          client-payload: '{"pkg_name": "cobase", "pkg_spec": toJson(fromJson(env.packageJson))}'
+          client-payload: '{"pkg_name": "cobase", "pkg_spec": ${{ toJson(env.packageJson) }}}'
   # rust:
   #   uses: timada-org/.github/.github/workflows/rust-testing.yml@v2.7.0
 
