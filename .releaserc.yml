@@ -5,8 +5,6 @@ plugins:
   - "@semantic-release/commit-analyzer"
   - "@semantic-release/release-notes-generator"
   - path: "@semantic-release/github"
-    assets:
-      - openapi.json
   - "@timada/semantic-release-cargo"
   - path: "@semantic-release/exec"
     prepareCmd: "cargo update"
