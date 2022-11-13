@@ -8,11 +8,13 @@ jobs:
     steps:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2
+        env:
+          SDK_PKG_SPEC: '{"openapi":"3.0.3","info":{"title":"api","description":"","contact":{"name":""},"license":{"name":""},"version":"0.0.2"},"paths":{"/groups":{"get":{"tags":["group"],"description":"","operationId":"find_all","responses":{"200":{"description":"Get groups did not result error","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/Group"}}}}}},"deprecated":false}},"/groups/create":{"post":{"tags":["group"],"description":"","operationId":"create","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateCommand"}}},"required":true},"responses":{"200":{"description":"Create group did not result error","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/Group"}}}}}},"deprecated":false}}},"components":{"schemas":{"CreateCommand":{"type":"object","required":["name"],"properties":{"name":{"type":"string"}}},"Group":{"type":"object","required":["name"],"properties":{"name":{"type":"string","example":"Transquadra"}}}}}}'
         with:
           token: ${{ secrets.GH_TOKEN }}
           repository: timada-org/sdk@feat/setup
           event-type: released
-          client-payload: '{"pkg_name": "cobase", "pkg_spec": toJson({"openapi":"3.0.3","info":{"title":"api","description":"","contact":{"name":""},"license":{"name":""},"version":"0.0.2"},"paths":{"/groups":{"get":{"tags":["group"],"description":"","operationId":"find_all","responses":{"200":{"description":"Get groups did not result error","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/Group"}}}}}},"deprecated":false}},"/groups/create":{"post":{"tags":["group"],"description":"","operationId":"create","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateCommand"}}},"required":true},"responses":{"200":{"description":"Create group did not result error","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/Group"}}}}}},"deprecated":false}}},"components":{"schemas":{"CreateCommand":{"type":"object","required":["name"],"properties":{"name":{"type":"string"}}},"Group":{"type":"object","required":["name"],"properties":{"name":{"type":"string","example":"Transquadra"}}}}}})}'
+          client-payload: '{"pkg_name": "cobase", "pkg_spec": "$SDK_PKG_SPEC"}'
   # rust:
   #   uses: timada-org/.github/.github/workflows/rust-testing.yml@v2.7.0
 
