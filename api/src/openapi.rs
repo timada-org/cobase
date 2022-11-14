@@ -1,12 +1,13 @@
 use actix_web::{get, web, HttpResponse};
 use utoipa::{openapi, OpenApi};
 
+use crate::command;
 use crate::group;
 
 #[derive(OpenApi)]
 #[openapi(
     paths(group::create, group::find_all),
-    components(schemas(group::Group, group::CreateCommand))
+    components(schemas(group::Group, group::CreateCommand, command::JsonResponse))
 )]
 pub struct ApiDoc;
 
