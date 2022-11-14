@@ -4,7 +4,7 @@ up:
 lint:
 	cargo clippy --all-features -- -D warnings
 
-serve:
+dev:
 	cargo run serve -c config/cobase.yml
 
 migrate:
