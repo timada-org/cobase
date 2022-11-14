@@ -36,7 +36,7 @@ async fn find_all(state: web::Data<AppState>, payload: JwtPayload) -> Result<Htt
     context_path = "/groups",
     request_body=CreateCommand,
     responses(
-        (status = 200, description = "Create group did not result error", body = [Group]),
+        (status = 200, description = "Create group did not result error", body = JsonResponse),
     )
 )]
 #[post("/create")]

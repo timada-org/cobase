@@ -4,8 +4,8 @@ use actix_web::HttpResponse;
 use evento::{Aggregate, Engine, Event, EventStore, PgEngine};
 use pulsar::{producer, DeserializeMessage, Payload, Producer, SerializeMessage, TokioExecutor};
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 use sqlx::PgPool;
+use utoipa::ToSchema;
 use uuid::Uuid;
 
 use crate::error::Error;
@@ -76,6 +76,12 @@ pub struct CommandMetadata {
     pub zone: String,
 }
 
+#[derive(Serialize, Deserialize, Debug, ToSchema)]
+pub struct JsonResponse {
+    #[schema(example = "V1StGXR8_Z5jdHi6B-myT")]
+    pub id: String,
+}
+
 #[derive(Clone, Debug)]
 pub struct CommandResponse(pub Result<CommandResult, MailboxError>);
 
@@ -111,8 +117,8 @@ impl CommandResponse {
 
         producer.send_all(events).await?;
 
-        Ok(HttpResponse::Ok().json(json!({
-            "id": info.aggregate_id
-        })))
+        Ok(HttpResponse::Ok().json(JsonResponse {
+            id: info.aggregate_id,
+        }))
     }
 }
