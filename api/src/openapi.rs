@@ -1,8 +1,8 @@
 use actix_web::{get, web, HttpResponse};
 use utoipa::{openapi, OpenApi};
 
-use crate::group;
 use crate::command;
+use crate::group;
 
 #[derive(OpenApi)]
 #[openapi(
