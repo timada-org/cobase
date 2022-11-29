@@ -74,7 +74,9 @@ impl<'a> Projection<'a> {
                     }
                 };
 
-                if let Err(Error::InternalServerErr(e)) = handler(pikav.clone(), db.clone(), event, metadata).await {
+                if let Err(Error::InternalServerErr(e)) =
+                    handler(pikav.clone(), db.clone(), event, metadata).await
+                {
                     error!("{e}");
                 }
             }
