@@ -1,8 +1,7 @@
 use std::str::FromStr;
 
 use api::{
-    App, AppOptions, DatabaseOptions, JwksOptions, OpenApiOptions, PikavOptions, PulsarOptions,
-    SwaggerUIOptions,
+    App, AppOptions, JwksOptions, OpenApiOptions, PikavOptions, PulsarOptions, SwaggerUIOptions,
 };
 use config::{Config, ConfigError, Environment, File};
 use serde::Deserialize;
@@ -14,7 +13,7 @@ pub struct Serve {
     pub listen: String,
     pub jwks: JwksOptions,
     pub pikav: PikavOptions,
-    pub database: DatabaseOptions,
+    pub dsn: String,
     pub pulsar: PulsarOptions,
     pub openapi: OpenApiOptions,
     pub swagger_ui: SwaggerUIOptions,
@@ -26,7 +25,7 @@ impl Serve {
         Config::builder()
             .add_source(File::with_name(path))
             .add_source(File::with_name(&format!("{}.local", path)).required(false))
-            .add_source(Environment::with_prefix(env!("CARGO_PKG_NAME")))
+            .add_source(Environment::with_prefix("cobase"))
             .build()?
             .try_deserialize()
     }
@@ -44,18 +43,15 @@ impl Serve {
         tracing::subscriber::set_global_default(subscriber)
             .expect("setting default subscriber failed");
 
-        let mut database = self.database.clone();
-        database.write = format!("{}/cobase?sslmode=disable", database.write);
-
         let app = App::new(AppOptions {
             zone: self.zone.to_owned(),
             listen: self.listen.to_owned(),
+            dsn: self.dsn.to_owned(),
             jwks: self.jwks.clone(),
             pikav: self.pikav.clone(),
             pulsar: self.pulsar.clone(),
             openapi: self.openapi.clone(),
             swagger_ui: self.swagger_ui.clone(),
-            database,
         });
 
         app.run().await

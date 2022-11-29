@@ -1,7 +1,7 @@
 use actix_web::{http::StatusCode, HttpResponse, HttpResponseBuilder, ResponseError};
 
 use thiserror::Error as ThisError;
-use tracing::log::error;
+use tracing::error;
 use validator::ValidationErrors;
 
 #[derive(ThisError, Debug, Clone)]
@@ -74,8 +74,14 @@ impl From<evento::Error> for Error {
     }
 }
 
-impl From<mongodb::error::Error> for Error {
-    fn from(e: mongodb::error::Error) -> Self {
+impl From<sqlx::Error> for Error {
+    fn from(e: sqlx::Error) -> Self {
+        Error::InternalServerErr(e.to_string())
+    }
+}
+
+impl From<uuid::Error> for Error {
+    fn from(e: uuid::Error) -> Self {
         Error::InternalServerErr(e.to_string())
     }
 }

@@ -1,6 +1,6 @@
 use evento::Aggregate;
-use mongodb::bson::doc;
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 use crate::{group::event::GroupEvent, projection::Projection};
 
@@ -13,7 +13,7 @@ use super::{
 pub struct Group {
     pub id: String,
     pub name: String,
-    pub user_id: String,
+    pub user_id: Uuid,
 }
 
 pub async fn start(projection: &Projection<'_>) -> Result<(), pulsar::Error> {
@@ -28,12 +28,17 @@ pub async fn start(projection: &Projection<'_>) -> Result<(), pulsar::Error> {
                     let group = Group {
                         id: aggregate::Group::to_id(event.aggregate_id),
                         name: data.name,
-                        user_id: metadata.user_id.to_owned(),
+                        user_id: Uuid::parse_str(&metadata.user_id)?,
                     };
 
-                    db.collection::<Group>("groups")
-                        .insert_one(group.clone(), None)
-                        .await?;
+                    sqlx::query!(
+                        "INSERT INTO groups (id, name, user_id) VALUES ($1, $2, $3)",
+                        &group.id,
+                        &group.name,
+                        &group.user_id
+                    )
+                    .execute(&db)
+                    .await?;
 
                     pikav.publish(vec![pikav_client::Event::new(
                         metadata.user_id,

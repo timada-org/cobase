@@ -2,8 +2,7 @@ use std::ops::DerefMut;
 
 use actix_jwks::JwtPayload;
 use actix_web::{get, post, web, HttpResponse, Scope};
-use futures::TryStreamExt;
-use mongodb::bson::doc;
+use uuid::Uuid;
 
 use crate::command::CommandResponse;
 use crate::error::Error;
@@ -11,6 +10,7 @@ use crate::AppState;
 
 use super::aggregate::Group;
 use super::command::CreateCommand;
+use super::projection::Group as ReadGroup;
 
 #[utoipa::path(
     context_path = "/groups",
@@ -20,14 +20,13 @@ use super::command::CreateCommand;
 )]
 #[get("")]
 async fn find_all(state: web::Data<AppState>, payload: JwtPayload) -> Result<HttpResponse, Error> {
-    let collection = state.read_db.collection::<Group>("groups");
-    let mut cursor = collection
-        .find(doc! {"user_id": payload.subject}, None)
-        .await?;
-    let mut groups = Vec::new();
-    while let Some(group) = cursor.try_next().await? {
-        groups.push(group);
-    }
+    let groups = sqlx::query_as!(
+        ReadGroup,
+        "SELECT * FROM groups WHERE user_id = $1",
+        Uuid::parse_str(&payload.subject)?
+    )
+    .fetch_all(&state.db)
+    .await?;
 
     Ok(HttpResponse::Ok().json(groups))
 }
