@@ -18,10 +18,13 @@ dev:
 	COBASE_LOG=debug cargo run serve -c config/cobase.yml
 
 migrate:
-	SQLX_OFFLINE=true cargo run migrate -c config/cobase.yml
+	sqlx migrate run --source ./cli/migrations
 
-openapi:
-	cargo run openapi -c config/cobase.yml
+revert:
+	sqlx migrate revert --source ./cli/migrations
 
 prepare:
 	cargo sqlx prepare --merged
+
+openapi:
+	cargo run openapi -c config/cobase.yml

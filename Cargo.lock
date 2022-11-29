@@ -1027,9 +1027,9 @@ checksum = "0206175f82b8d6bf6652ff7d71a1e27fd2e4efde587fd368662814d6ec1d9ce0"
 
 [[package]]
 name = "evento"
-version = "0.2.5"
+version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2657d6b85f9fb5439f45f3bb14586739da290fd478ec547d9a1961e16a39f73f"
+checksum = "7038cca654d7037fe40b67c78ac2fc9b1c2a34c050d92cc92e1de4b00edb36c1"
 dependencies = [
  "chrono",
  "parking_lot 0.12.1",
