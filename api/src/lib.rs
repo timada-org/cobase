@@ -146,7 +146,7 @@ impl App {
                 }))
                 .app_data(Data::new(jwks_client.clone()))
                 .app_data(Data::new(openapi.clone()))
-                .service(group::scope())
+                .service(web::scope("/api").service(group::scope()))
                 .service(openapi::service)
                 .service(
                     SwaggerUi::new("/swagger-ui/{_:.*}")

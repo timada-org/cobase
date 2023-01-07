@@ -19,9 +19,8 @@ export default defineConfig({
         secure: false,
       },
       "/api": {
-        target: "https://timada.localhost/api/cobase",
+        target: "https://timada.localhost/cobase",
         changeOrigin: true,
-        rewrite: (path) => path.substring(4),
         secure: false,
       },
       "/kratos": {

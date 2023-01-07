@@ -13,7 +13,7 @@ use super::command::CreateCommand;
 use super::projection::Group as ReadGroup;
 
 #[utoipa::path(
-    context_path = "/groups",
+    context_path = "/api/groups",
     responses(
         (status = 200, description = "Get groups did not result error", body = [Group]),
     )
@@ -32,7 +32,7 @@ async fn find_all(state: web::Data<AppState>, payload: JwtPayload) -> Result<Htt
 }
 
 #[utoipa::path(
-    context_path = "/groups",
+    context_path = "/api/groups",
     request_body=CreateCommand,
     responses(
         (status = 200, description = "Create group did not result error", body = JsonResponse),
