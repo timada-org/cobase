@@ -4,3 +4,6 @@ on: pull_request
 jobs:
   rust:
     uses: timada-org/.github/.github/workflows/rust-testing.yml@v2.9.0
+
+  app:
+    uses: timada-org/.github/.github/workflows/app-testing.yml@v2.9.0

@@ -4,6 +4,7 @@ branches:
 plugins:
   - "@semantic-release/commit-analyzer"
   - "@semantic-release/release-notes-generator"
+  - "@semantic-release/npm"
   - path: "@semantic-release/github"
   - "@timada/semantic-release-cargo"
   - path: "@semantic-release/exec"
@@ -19,3 +20,5 @@ plugins:
     assets:
       - "**/Cargo.toml"
       - Cargo.lock
+      - "**/package.json"
+      - package.json

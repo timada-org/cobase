@@ -1,0 +1,27 @@
+{
+  "name": "root",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "pre-commit": "lint-staged",
+    "prepare": "is-ci || husky install"
+  },
+  "lint-staged": {
+    "web/src/**/*.{js,ts,tsx}": [
+      "eslint --fix --no-color --max-warnings=0 --no-ignore"
+    ],
+    "**/*.rs": [
+      "cargo clippy --fix --all-features -- -D warnings"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^8.0.2",
+    "is-ci": "^3.0.1",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.7.1"
+  }
+}

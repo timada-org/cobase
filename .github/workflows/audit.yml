@@ -6,3 +6,5 @@ on:
 jobs:
   rust:
     uses: timada-org/.github/.github/workflows/rust-audit.yml@v2.9.0
+  app:
+    uses: timada-org/.github/.github/workflows/app-audit.yml@v2.9.0
