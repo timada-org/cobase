@@ -1,8 +1,8 @@
 use evento::Event;
 use futures::{Future, TryStreamExt};
-use mongodb::Database;
 use pulsar::{Consumer, Pulsar, SubType, TokioExecutor};
-use tracing::log::error;
+use sqlx::PgPool;
+use tracing::error;
 
 use crate::{
     command::{CommandMessage, CommandMetadata},
@@ -12,7 +12,7 @@ use crate::{
 
 pub struct Projection<'a> {
     pub pulsar: &'a Pulsar<TokioExecutor>,
-    pub read_db: &'a Database,
+    pub db: &'a PgPool,
     pub pikav: &'a pikav_client::Client,
     pub options: &'a AppOptions,
 }
@@ -21,7 +21,7 @@ impl<'a> Projection<'a> {
     pub async fn spawn<T>(
         &self,
         name: &'a str,
-        handler: fn(pikav_client::Client, mongodb::Database, Event, CommandMetadata) -> T,
+        handler: fn(pikav_client::Client, PgPool, Event, CommandMetadata) -> T,
     ) -> Result<(), pulsar::Error>
     where
         T: Future<Output = Result<(), Error>> + Send + 'static,
@@ -37,7 +37,7 @@ impl<'a> Projection<'a> {
             .build()
             .await?;
 
-        let db = self.read_db.clone();
+        let db = self.db.clone();
         let pikav = self.pikav.clone();
 
         tokio::spawn(async move {
@@ -74,7 +74,9 @@ impl<'a> Projection<'a> {
                     }
                 };
 
-                if let Err(e) = handler(pikav.clone(), db.clone(), event, metadata).await {
+                if let Err(Error::InternalServerErr(e)) =
+                    handler(pikav.clone(), db.clone(), event, metadata).await
+                {
                     error!("{e}");
                 }
             }

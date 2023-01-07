@@ -12,6 +12,38 @@ services:
     networks:
       - intranet
 
+  cobase-migrate:
+    image: timada0/cobase
+    command: migrate -c /home/timada/cobase.yml
+    volumes:
+      - type: bind
+        source: config/cobase.standalone.yml
+        target: /home/timada/cobase.yml
+    restart: on-failure
+    profiles:
+      - standalone
+    networks:
+      - intranet
+    depends_on:
+      - cobase-cockroach-init
+
+  cobase:
+    image: timada0/cobase
+    ports:
+      - 3011:80
+    command: serve -c /home/timada/cobase.yml
+    volumes:
+      - type: bind
+        source: config/cobase.standalone.yml
+        target: /home/timada/cobase.yml
+    profiles:
+      - standalone
+    restart: on-failure
+    networks:
+      - intranet
+    depends_on:
+      - cobase-migrate
+
 networks:
   intranet:
     name: timada

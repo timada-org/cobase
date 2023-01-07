@@ -1,0 +1,22 @@
+zone: eu-west-3
+listen: "0.0.0.0:80"
+
+jwks:
+  url: http://oathkeeper:4456/.well-known/jwks.json
+
+pikav:
+  url: http://pikav:6750
+  namespace: cobase
+
+dsn: cockroach://cobase@cockroach:26257/cobase?sslmode=disable
+
+pulsar:
+  url: pulsar://pulsar:6650
+  namespace: non-persistent://public/default
+
+openapi:
+  servers:
+    - url: /api/cobase
+
+swagger_ui:
+  url: /api/cobase/openapi.json

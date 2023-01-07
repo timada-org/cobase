@@ -8,9 +8,7 @@ pikav:
   url: http://pikav.localhost:6750
   namespace: cobase
 
-database:
-  read: mongodb://timada:alphadeltaomega@127.0.0.1:27017
-  write: cockroach://cobase@127.0.0.1:26257
+dsn: cockroach://cobase@127.0.0.1:26257/cobase?sslmode=disable
 
 pulsar:
   url: pulsar://127.0.0.1:6650

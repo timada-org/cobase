@@ -14,14 +14,13 @@ use actix_web::{
 };
 use command::Command;
 use evento::{EventStore, PgEngine};
-use mongodb::{options::ClientOptions, Client};
 use projection::Projection;
 use pulsar::{Producer, Pulsar, TokioExecutor};
 use serde::Deserialize;
 use sqlx::PgPool;
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use tracing::log::error;
+use tracing::error;
 use utoipa::{openapi::Server, OpenApi};
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -29,7 +28,7 @@ pub struct AppState {
     pub zone: String,
     pub cmd: Addr<Command>,
     pub store: EventStore<PgEngine>,
-    pub read_db: mongodb::Database,
+    pub db: PgPool,
     pub group_producer: Arc<Mutex<Producer<TokioExecutor>>>,
 }
 
@@ -51,12 +50,6 @@ pub struct PulsarOptions {
 }
 
 #[derive(Deserialize, Clone)]
-pub struct DatabaseOptions {
-    pub read: String,
-    pub write: String,
-}
-
-#[derive(Deserialize, Clone)]
 pub struct OpenApiOptions {
     pub servers: Option<Vec<Server>>,
 }
@@ -71,7 +64,7 @@ pub struct AppOptions {
     pub listen: String,
     pub jwks: JwksOptions,
     pub pikav: PikavOptions,
-    pub database: DatabaseOptions,
+    pub dsn: String,
     pub pulsar: PulsarOptions,
     pub openapi: OpenApiOptions,
     pub swagger_ui: SwaggerUIOptions,
@@ -95,7 +88,7 @@ impl App {
             namespace: self.options.pikav.namespace.to_owned(),
         });
 
-        let pool = match PgPool::connect(&self.options.database.write).await {
+        let pool = match PgPool::connect(&self.options.dsn).await {
             Ok(pool) => pool,
             Err(e) => {
                 error!("{e}");
@@ -113,17 +106,8 @@ impl App {
             }
         };
 
-        let read_db = match create_read_database(&self.options).await {
-            Ok(db) => db,
-            Err(e) => {
-                error!("{e}");
-
-                std::process::exit(1)
-            }
-        };
-
         let projection = Projection {
-            read_db: &read_db,
+            db: &pool,
             pulsar: &pulsar,
             options: &self.options,
             pikav: &pikva_client,
@@ -158,7 +142,7 @@ impl App {
                     cmd: cmd.clone(),
                     store: PgEngine::new(pool.clone()),
                     group_producer: group_producer.clone(),
-                    read_db: read_db.clone(),
+                    db: pool.clone(),
                 }))
                 .app_data(Data::new(jwks_client.clone()))
                 .app_data(Data::new(openapi.clone()))
@@ -187,14 +171,6 @@ async fn create_producer(
         .build()
         .await
         .map(|producer| Arc::new(Mutex::new(producer)))
-}
-
-async fn create_read_database(
-    app_options: &AppOptions,
-) -> Result<mongodb::Database, mongodb::error::Error> {
-    let options = ClientOptions::parse(&app_options.database.read).await?;
-
-    Client::with_options(options).map(|client| client.database("cobase"))
 }
 
 async fn create_pulsar(options: &AppOptions) -> Result<Pulsar<TokioExecutor>, pulsar::Error> {

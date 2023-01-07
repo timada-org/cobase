@@ -1,11 +1,10 @@
-use api::DatabaseOptions;
 use config::{Config, ConfigError, Environment, File};
 use serde::Deserialize;
-use sqlx::{Executor, PgPool};
+use sqlx::{postgres::PgConnectOptions, Executor, PgPool};
 
 #[derive(Deserialize)]
 pub struct Migrate {
-    pub database: DatabaseOptions,
+    pub dsn: String,
 }
 
 impl Migrate {
@@ -19,16 +18,18 @@ impl Migrate {
     }
 
     pub async fn run(&self) -> Result<(), std::io::Error> {
-        let pool = PgPool::connect(&self.database.write).await.unwrap();
+        let dsn_options = self.dsn.parse::<PgConnectOptions>().unwrap();
+        let db_name = dsn_options.get_database().unwrap().to_owned();
+        let pg_options = dsn_options.database("postgres");
 
+        let pool = PgPool::connect_with(pg_options).await.unwrap();
+        let query = format!("create database {};", db_name);
         let mut conn = pool.acquire().await.unwrap();
-        let _ = conn.execute("create database cobase;").await;
+        let _ = conn.execute(query.as_str()).await;
 
         drop(pool);
 
-        let pool = PgPool::connect(&format!("{}/cobase", self.database.write))
-            .await
-            .unwrap();
+        let pool = PgPool::connect(&self.dsn).await.unwrap();
 
         sqlx::migrate!()
             .set_locking(false)
