@@ -6,7 +6,7 @@
   "scripts": {
     "start": "vite",
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --base=/cobase/static/",
     "serve": "vite preview",
     "lint": "eslint 'src/**/*.{js,ts,tsx}' --max-warnings=0 --no-ignore",
     "lint:fix": "pnpm lint --fix"
@@ -25,7 +25,6 @@
     "vite-plugin-solid": "^2.4.0"
   },
   "dependencies": {
-    "@ory/kratos-client": "^0.10.1",
     "@tanstack/solid-query": "^4.15.1",
     "@timada/cobase-client": "^0.2.1",
     "pikav": "^0.3.1",

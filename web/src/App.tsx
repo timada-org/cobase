@@ -1,11 +1,7 @@
 import { Component, createSignal, For, Match, Switch } from "solid-js";
-import { useSubscribe } from "pikav/solid";
-import {
-  Configuration,
-  CreateCommand,
-  Group,
-  GroupApi,
-} from "@timada/cobase-client";
+import { Provider as PikavProvider, useSubscribe } from "pikav/solid";
+import { Client } from "pikav";
+import { CreateCommand, Group } from "@timada/cobase-client";
 
 import {
   QueryClient,
@@ -14,21 +10,22 @@ import {
   createMutation,
   useQueryClient,
 } from "@tanstack/solid-query";
-
-const groupApi = new GroupApi(new Configuration({ basePath: "/api" }));
-const queryClient = new QueryClient();
+import { useConfig } from "./Config";
+import Api, { useApi } from "./Api";
 
 const Groups: Component = () => {
+  const api = useApi();
   const queryClient = useQueryClient();
   const [name, setName] = createSignal("");
 
   const query = createQuery(
     () => ["groups"],
-    async () => (await groupApi.findAll()).data
+    async () => (await api.group.findAll()).data
   );
 
   const mutation = createMutation({
-    mutationFn: async (cmd: CreateCommand) => (await groupApi.create(cmd)).data,
+    mutationFn: async (cmd: CreateCommand) =>
+      (await api.group.create(cmd)).data,
   });
 
   useSubscribe<Group>("groups/+", (event) => {
@@ -75,10 +72,22 @@ const Groups: Component = () => {
 };
 
 const App: Component = () => {
+  const config = useConfig();
+  let pikavClient = new Client({
+    url: config.pikav.url,
+    api: config.pikav.api,
+    namespace: "cobase",
+  });
+  const queryClient = new QueryClient();
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <Groups />
-    </QueryClientProvider>
+    <Api>
+      <PikavProvider client={pikavClient}>
+        <QueryClientProvider client={queryClient}>
+          <Groups />
+        </QueryClientProvider>
+      </PikavProvider>
+    </Api>
   );
 };
 

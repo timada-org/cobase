@@ -16,7 +16,6 @@ importers:
 
   web:
     specifiers:
-      '@ory/kratos-client': ^0.10.1
       '@tanstack/solid-query': ^4.15.1
       '@timada/cobase-client': ^0.2.1
       '@typescript-eslint/parser': ^5.42.1
@@ -32,7 +31,6 @@ importers:
       vite: ^3.2.2
       vite-plugin-solid: ^2.4.0
     dependencies:
-      '@ory/kratos-client': 0.10.1
       '@tanstack/solid-query': 4.15.1_solid-js@1.6.2
       '@timada/cobase-client': 0.2.1
       pikav: 0.3.1_solid-js@1.6.2
@@ -493,14 +491,6 @@ packages:
       fastq: 1.13.0
     dev: true
 
-  /@ory/kratos-client/0.10.1:
-    resolution: {integrity: sha512-WfoEW1HKeKUkG+57oShb6D3xENM3DpRbUxvVxbPZkJUKzFlXpBzbX71k2oQ6ajv6cy0ULVEKFLNcHpAoGjraNA==}
-    dependencies:
-      axios: 0.21.4
-    transitivePeerDependencies:
-      - debug
-    dev: false
-
   /@tanstack/query-core/4.15.1:
     resolution: {integrity: sha512-+UfqJsNbPIVo0a9ANW0ZxtjiMfGLaaoIaL9vZeVycvmBuWywJGtSi7fgPVMCPdZQFOzMsaXaOsDtSKQD5xLRVQ==}
     dev: false
@@ -720,14 +710,6 @@ packages:
     resolution: {integrity: sha512-1exVbW0X1O/HSr/WMwnaweyqcWOgZgLiVxdLG34pvSQk4NlYQr9OUy0JLwuhFfuVNQzzqgH57eYzkFBCb3bIsQ==}
     engines: {node: '>=4'}
     dev: true
-
-  /axios/0.21.4:
-    resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
-    dependencies:
-      follow-redirects: 1.15.2
-    transitivePeerDependencies:
-      - debug
-    dev: false
 
   /axios/0.26.1:
     resolution: {integrity: sha512-fPwcX4EvnSHuInCMItEhAGnaSEXRBjtzh9fOtsE6E1G6p7vl7edEeZe11QHf18+6+9gR5PbKV/sGKNaD8YaMeA==}

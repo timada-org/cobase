@@ -13,6 +13,8 @@ plugins:
     prepareCmd: "cargo run openapi -c config/cobase.yml"
   - path: "@semantic-release/exec"
     prepareCmd: "cargo build --release"
+  - path: "@semantic-release/exec"
+    prepareCmd: "pnpm --stream -r build"
   - path: "@codedependant/semantic-release-docker"
     dockerProject: "timada0"
     dockerImage: "cobase"
