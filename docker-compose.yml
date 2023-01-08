@@ -44,6 +44,21 @@ services:
     depends_on:
       - cobase-migrate
 
+  cobase-web:
+    image: nginx:1.23-alpine
+    volumes:
+      - ./.docker/nginx/templates:/etc/nginx/templates
+      - ./.docker/nginx/proxy.conf:/etc/nginx/proxy.conf
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cobase-web.rule=Host(`cobase.timada.localhost`)"
+      - "traefik.http.routers.cobase-web.tls=true"
+      - "traefik.http.routers.cobase-web.entrypoints=https"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - intranet
+
 networks:
   intranet:
     name: timada

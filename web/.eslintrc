@@ -1,0 +1,10 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["solid", "jsx-a11y"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:solid/typescript",
+    "plugin:jsx-a11y/recommended",
+    "plugin:prettier/recommended"
+  ]
+}
