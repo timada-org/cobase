@@ -7,7 +7,7 @@ on:
 jobs:
   service:
     uses: timada-org/.github/.github/workflows/service-release.yml@feat/service-workflows
-    inputs:
+    with:
       service_name: cobase
     secrets:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
