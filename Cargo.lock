@@ -334,7 +334,7 @@ checksum = "2cb2f989d18dd141ab8ae82f64d1a8cdd37e0840f73a406896cf5e99502fab61"
 
 [[package]]
 name = "api"
-version = "0.3.3"
+version = "0.3.4"
 dependencies = [
  "actix",
  "actix-files",
@@ -732,7 +732,7 @@ dependencies = [
 
 [[package]]
 name = "cli"
-version = "0.3.3"
+version = "0.3.4"
 dependencies = [
  "actix-rt",
  "api",
