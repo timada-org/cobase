@@ -5,8 +5,8 @@ on:
       - main
 
 jobs:
-  rust:
-    uses: timada-org/.github/.github/workflows/api-release.yml@v2.9.0
+  service:
+    uses: timada-org/.github/.github/workflows/service-release.yml@feat/service-workflows
     secrets:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
