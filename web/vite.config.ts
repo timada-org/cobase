@@ -20,6 +20,7 @@ export default defineConfig({
       },
       "/api": {
         target: "https://timada.localhost/cobase",
+        rewrite: (path) => path.substring(4),
         changeOrigin: true,
         secure: false,
       },
