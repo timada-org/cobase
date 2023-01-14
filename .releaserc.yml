@@ -10,7 +10,7 @@ plugins:
   - path: "@semantic-release/exec"
     prepareCmd: "cargo update"
   - path: "@semantic-release/exec"
-    prepareCmd: "cargo run openapi -c config/cobase.yml"
+    prepareCmd: "cargo run openapi -c configs/cobase.yml"
   - path: "@semantic-release/exec"
     prepareCmd: "cargo build --release"
   - path: "@semantic-release/exec"

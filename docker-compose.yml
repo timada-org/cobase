@@ -17,7 +17,7 @@ services:
     command: migrate -c /home/timada/cobase.yml
     volumes:
       - type: bind
-        source: config/cobase.standalone.yml
+        source: configs/standalone.yml
         target: /home/timada/cobase.yml
     restart: on-failure
     profiles:
@@ -34,7 +34,7 @@ services:
     command: serve -c /home/timada/cobase.yml
     volumes:
       - type: bind
-        source: config/cobase.standalone.yml
+        source: configs/standalone.yml
         target: /home/timada/cobase.yml
     profiles:
       - standalone
