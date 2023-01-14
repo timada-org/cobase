@@ -54,7 +54,11 @@ func NewServeCmd() (cmd *cobra.Command) {
 
 	cmd.Flags().StringVarP(&staticPath, "static", "s", "", "static dir path")
 	cmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
-	cmd.MarkFlagRequired("config")
+
+	if err := cmd.MarkFlagRequired("config"); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 
 	return cmd
 }
