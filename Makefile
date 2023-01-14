@@ -16,3 +16,4 @@ dev:
 
 lint:
 	golangci-lint run
+
