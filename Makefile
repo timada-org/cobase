@@ -13,3 +13,6 @@ standalone:
 
 dev:
 	go run . serve -c configs/default.yml -s web/dist
+
+lint:
+	golangci-lint run
