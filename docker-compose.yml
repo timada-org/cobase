@@ -30,12 +30,11 @@ services:
   cobase:
     image: timada0/cobase
     ports:
-      - 3011:80
-    command: serve -c /home/timada/cobase.yml
+      - 3011:3011
     volumes:
       - type: bind
         source: configs/standalone.yml
-        target: /home/timada/cobase.yml
+        target: /etc/cobase/config.yml
     profiles:
       - standalone
     restart: on-failure

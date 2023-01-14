@@ -1,5 +1,5 @@
 zone: eu-west-3
-addr: ":80"
+addr: ":3011"
 
 jwks:
   url: http://oathkeeper:4456/.well-known/jwks.json

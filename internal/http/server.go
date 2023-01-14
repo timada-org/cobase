@@ -36,9 +36,8 @@ func (s *Server) Start() {
 
 		router.NotFound = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			w.Header().Add("Expires", "Tue, 03 Jul 2001 06:00:00 GMT")
-
-			// w.Header().Add("Last-Modified", "Tue, 03 Jul 2001 06:00:00 GMT")
 			w.Header().Add("Cache-Control", "max-age=0, no-cache, must-revalidate, proxy-revalidate")
+
 			http.ServeFile(w, req, s.options.StaticPath+"/index.html")
 		})
 	}
