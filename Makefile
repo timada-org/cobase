@@ -11,20 +11,8 @@ standalone:
 	docker compose --profile standalone pull
 	docker compose --profile standalone up -d --remove-orphans
 
-lint:
-	cargo clippy --all-features -- -D warnings
-
 dev:
-	COBASE_LOG=debug cargo run serve -c config/cobase.yml
+	go run . serve -c configs/default.yml -s web/dist
 
-migrate:
-	sqlx migrate run --source ./cli/migrations
-
-revert:
-	sqlx migrate revert --source ./cli/migrations
-
-prepare:
-	cargo sqlx prepare --merged
-
-openapi:
-	cargo run openapi -c config/cobase.yml
+lint:
+	golangci-lint run

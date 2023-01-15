@@ -1,5 +1,5 @@
 zone: eu-west-3
-listen: "0.0.0.0:3011"
+addr: ":3011"
 
 log: debug
 
@@ -16,9 +16,9 @@ pulsar:
   url: pulsar://127.0.0.1:6650
   namespace: non-persistent://public/default
 
-openapi:
-  servers:
-    - url: /cobase
+# openapi:
+#   servers:
+#     - url: /cobase
 
-swagger_ui:
-  url: /cobase/openapi.json
+# swagger_ui:
+#   url: /cobase/openapi.json

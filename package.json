@@ -11,8 +11,8 @@
     "web/src/**/*.{js,ts,tsx}": [
       "eslint --fix --no-color --max-warnings=0 --no-ignore"
     ],
-    "**/*.rs": [
-      "cargo clippy --fix --all-features -- -D warnings"
+    "**/*.go": [
+      "gofmt -w -s ."
     ]
   },
   "keywords": [],

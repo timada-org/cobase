@@ -6,13 +6,10 @@ plugins:
   - "@semantic-release/release-notes-generator"
   - "@semantic-release/npm"
   - path: "@semantic-release/github"
-  - "@timada/semantic-release-cargo"
   - path: "@semantic-release/exec"
-    prepareCmd: "cargo update"
-  - path: "@semantic-release/exec"
-    prepareCmd: "cargo run openapi -c config/cobase.yml"
-  - path: "@semantic-release/exec"
-    prepareCmd: "cargo build --release"
+    prepareCmd: "export DOCKER_CONTENT_TRUST=1 && docker pull golang@sha256:2381c1e5f8350a901597d633b2e517775eeac7a6682be39225a93b22cfd0f8bb"
+  # - path: "@semantic-release/exec"
+  #   prepareCmd: "cargo run openapi -c configs/cobase.yml"
   - path: "@semantic-release/exec"
     prepareCmd: "pnpm --stream -r build"
   - path: "@codedependant/semantic-release-docker"
@@ -20,7 +17,5 @@ plugins:
     dockerImage: "cobase"
   - path: "@semantic-release/git"
     assets:
-      - "**/Cargo.toml"
-      - Cargo.lock
       - "**/package.json"
       - package.json
