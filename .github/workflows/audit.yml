@@ -5,4 +5,4 @@ on:
 
 jobs:
   service:
-    uses: timada-org/.github/.github/workflows/service-audit.yml@feat/service/switch-to-go
+    uses: timada-org/.github/.github/workflows/service-audit.yml@v2.11.0
