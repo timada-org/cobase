@@ -12,7 +12,8 @@
       "eslint --fix --no-color --max-warnings=0 --no-ignore"
     ],
     "**/*.go": [
-      "gofmt -w -s ."
+      "gofmt -w -s .",
+      "go mod tidy"
     ]
   },
   "keywords": [],
@@ -22,7 +23,9 @@
     "husky": "^8.0.2",
     "is-ci": "^3.0.1",
     "lint-staged": "^13.0.3",
-    "prettier": "^2.7.1"
+    "openapi-types": "^12.1.0",
+    "prettier": "^2.7.1",
+    "swagger-cli": "^4.0.4"
   },
   "workspaces": [
     "web"

@@ -3,4 +3,4 @@ on: pull_request
 
 jobs:
   service:
-    uses: timada-org/.github/.github/workflows/service-testing.yml@feat/service/switch-to-go
+    uses: timada-org/.github/.github/workflows/service-testing.yml@v2.12.0

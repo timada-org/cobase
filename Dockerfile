@@ -51,6 +51,7 @@ COPY --from=builder /etc/group /etc/group
 # Copy our static executable
 COPY --from=builder /go/bin/cobase /go/bin/cobase
 COPY ./web/dist /etc/cobase/static
+COPY ./openapi.json /etc/cobase/static/
 
 # Use an unprivileged user.
 USER cobase:cobase
