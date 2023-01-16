@@ -6,6 +6,7 @@ importers:
     specifiers:
       husky: ^8.0.2
       is-ci: ^3.0.1
+      json: ^11.0.0
       lint-staged: ^13.0.3
       openapi-types: ^12.1.0
       prettier: ^2.7.1
@@ -13,6 +14,7 @@ importers:
     devDependencies:
       husky: 8.0.2
       is-ci: 3.0.1
+      json: 11.0.0
       lint-staged: 13.0.3
       openapi-types: 12.1.0
       prettier: 2.7.1
@@ -2007,6 +2009,12 @@ packages:
 
   /json-stable-stringify-without-jsonify/1.0.1:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
+    dev: true
+
+  /json/11.0.0:
+    resolution: {integrity: sha512-N/ITv3Yw9Za8cGxuQqSqrq6RHnlaHWZkAFavcfpH/R52522c26EbihMxnY7A1chxfXJ4d+cEFIsyTgfi9GihrA==}
+    engines: {node: '>=0.10.0'}
+    hasBin: true
     dev: true
 
   /json5/2.2.1:
