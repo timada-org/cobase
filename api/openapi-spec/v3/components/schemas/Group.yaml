@@ -1,0 +1,14 @@
+type: object
+properties:
+  id:
+    description: Group id
+    type: string
+    example: BBMODVqZjOAXs8JYmvyco
+  name:
+    description: Group name
+    type: string
+    example: My Group 1
+  user_id:
+    description: Group owner
+    type: string
+    example: 9a7dfcbf-fd75-4918-92b7-10365d1363df

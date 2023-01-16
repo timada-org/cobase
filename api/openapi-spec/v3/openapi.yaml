@@ -1,42 +1,30 @@
 openapi: 3.1.0
 info:
   version: 1.0.0
-  title: Example.com
-  termsOfService: 'https://example.com/terms/'
+  title: Timada.co
+  termsOfService: 'https://timada.co/terms/'
   contact:
-    email: contact@example.com
+    email: contact@timada.co
     url: 'http://example.com/contact'
   license:
     name: GNU Affero General Public License v3
     identifier: AGPL-3.0
     url: 'https://opensource.org/licenses/AGPL-3.0'
-  x-logo:
-    url: 'https://redocly.github.io/openapi-template/logo.png'
   description:
     $ref: ./info-description.md
 tags:
-  - name: Echo
-    description: Example echo operations.
-  - name: User
-    description: Operations about users.
-  - name: Tag
-    description: This is a tag description.
+  - name: Public
+    description: Operations about public api.
 servers:
-  - url: 'https://{tenant}/api/v1'
+  - url: 'https://{tenant}/cobase/api'
     variables:
       tenant:
         default: www
         description: Your tenant id
-  - url: 'https://example.com/api/v1'
+  - url: 'https://timada.co/cobase/api'
 paths:
-  '/users/{username}':
-    $ref: 'paths/users_{username}.yaml'
-  /echo:
-    $ref: paths/echo.yaml
-  /pathItem:
-    $ref: paths/path-item.yaml
-  /pathItemWithExamples:
-    $ref: paths/path-item-with-examples.yaml
+  '/groups':
+    $ref: 'paths/groups.yaml'
 components:
   securitySchemes:
     api_key:
