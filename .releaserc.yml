@@ -8,8 +8,20 @@ plugins:
   - path: "@semantic-release/github"
   - path: "@semantic-release/exec"
     prepareCmd: "export DOCKER_CONTENT_TRUST=1 && docker pull golang@sha256:2381c1e5f8350a901597d633b2e517775eeac7a6682be39225a93b22cfd0f8bb"
-  # - path: "@semantic-release/exec"
-  #   prepareCmd: "cargo run openapi -c configs/cobase.yml"
+  - path: "@google/semantic-release-replace-plugin"
+    replacements:
+      - files:
+          - "api/openapi-spec/v3/openapi.yaml"
+        from: "version: 1.0.0"
+        to: "version: ${nextRelease.version}"
+        countMatches: true
+        results:
+          - file: "api/openapi-spec/v3/openapi.yaml"
+            hasChanged: true
+            numMatches: 1
+            numReplacements: 1
+  - path: "@semantic-release/exec"
+    prepareCmd: "node_modules/.bin/swagger-cli bundle api/openapi-spec/v3/openapi.yaml --outfile openapi.json --type json"
   - path: "@semantic-release/exec"
     prepareCmd: "pnpm --stream -r build"
   - path: "@codedependant/semantic-release-docker"
