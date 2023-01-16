@@ -7,8 +7,9 @@ info:
     email: contact@example.com
     url: 'http://example.com/contact'
   license:
-    name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    name: GNU Affero General Public License v3
+    identifier: AGPL-3.0
+    url: 'https://opensource.org/licenses/AGPL-3.0'
   x-logo:
     url: 'https://redocly.github.io/openapi-template/logo.png'
   description:
