@@ -6,7 +6,7 @@ importers:
     specifiers:
       husky: ^8.0.2
       is-ci: ^3.0.1
-      json: ^11.0.0
+      json5: ^2.2.3
       lint-staged: ^13.0.3
       openapi-types: ^12.1.0
       prettier: ^2.7.1
@@ -14,7 +14,7 @@ importers:
     devDependencies:
       husky: 8.0.2
       is-ci: 3.0.1
-      json: 11.0.0
+      json5: 2.2.3
       lint-staged: 13.0.3
       openapi-types: 12.1.0
       prettier: 2.7.1
@@ -2011,14 +2011,14 @@ packages:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
     dev: true
 
-  /json/11.0.0:
-    resolution: {integrity: sha512-N/ITv3Yw9Za8cGxuQqSqrq6RHnlaHWZkAFavcfpH/R52522c26EbihMxnY7A1chxfXJ4d+cEFIsyTgfi9GihrA==}
-    engines: {node: '>=0.10.0'}
+  /json5/2.2.1:
+    resolution: {integrity: sha512-1hqLFMSrGHRHxav9q9gNjJ5EXznIxGVO09xQRrwplcS8qs28pZ8s8hupZAmqDwZUmVZ2Qb2jnyPOWcDH8m8dlA==}
+    engines: {node: '>=6'}
     hasBin: true
     dev: true
 
-  /json5/2.2.1:
-    resolution: {integrity: sha512-1hqLFMSrGHRHxav9q9gNjJ5EXznIxGVO09xQRrwplcS8qs28pZ8s8hupZAmqDwZUmVZ2Qb2jnyPOWcDH8m8dlA==}
+  /json5/2.2.3:
+    resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
     hasBin: true
     dev: true

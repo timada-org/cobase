@@ -23,7 +23,7 @@ plugins:
   - path: "@semantic-release/exec"
     prepareCmd: "node_modules/.bin/swagger-cli bundle api/openapi-spec/v3/openapi.yaml --outfile openapi.pretty.json"
   - path: "@semantic-release/exec"
-    prepareCmd: "node_modules/.bin/json -o json-0 -f openapi.pretty.json > openapi.json"
+    prepareCmd: "node_modules/.bin/json5 openapi.pretty.json -o openapi.json"
   - path: "@semantic-release/exec"
     prepareCmd: "pnpm --stream -r build"
   - path: "@codedependant/semantic-release-docker"
