@@ -1,11 +1,7 @@
 import { Component, createSignal, For, Match, Switch } from "solid-js";
 import { Provider as PikavProvider, useSubscribe } from "pikav/solid";
 import { Client } from "pikav";
-import {
-  // CreateCommand,
-  // Group,
-  CreateGroupRequest,
-} from "@timada/cobase-client";
+import { Group, CreateGroupRequest } from "@timada/cobase-client";
 
 import {
   QueryClient,
