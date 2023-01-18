@@ -12,13 +12,15 @@ info:
   description:
     $ref: ./info-description.md
 tags:
-  - name: Public
-    description: Operations about public api.
+  - name: User
+    description: Operations about user api.
 servers:
   - url: "https://timada.co/cobase/api"
 paths:
-  "/groups":
-    $ref: "paths/groups.yaml"
+  "/group/get-all":
+    $ref: "paths/group_get-all.yaml"
+  "/group/create":
+    $ref: "paths/group_create.yaml"
 components:
   securitySchemes:
     api_key:
