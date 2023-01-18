@@ -1,16 +1,11 @@
 package http
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
 )
-
-func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	fmt.Fprintf(w, "hello, %s!\n", ps.ByName("name"))
-}
 
 type ServerOptions struct {
 	StaticPath string
@@ -24,7 +19,7 @@ type Server struct {
 func (s *Server) Start() {
 	router := httprouter.New()
 
-	router.GET("/hello/:name", Hello)
+	configureGroups(router)
 
 	if s.options.StaticPath != "" {
 		fileServer := http.FileServer(http.Dir(s.options.StaticPath))

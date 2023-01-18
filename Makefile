@@ -16,3 +16,6 @@ dev:
 
 lint:
 	golangci-lint run
+
+openapi.validate:
+	node_modules/.bin/swagger-cli validate api/openapi-spec/v3/openapi.yaml

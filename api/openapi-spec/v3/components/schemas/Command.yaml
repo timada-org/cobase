@@ -1,0 +1,6 @@
+type: object
+properties:
+  id:
+    description: Object id
+    type: string
+    example: BBMODVqZjOAXs8JYmvyco

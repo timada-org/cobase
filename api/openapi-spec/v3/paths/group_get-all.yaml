@@ -1,0 +1,26 @@
+get:
+  tags:
+    - User
+  summary: Get user groups
+  description: |
+    A list of groups owned by the user
+  operationId: getGroups
+  security:
+    - api_key: []
+  responses:
+    "200":
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Group.yaml
+          example:
+            - id: R5vpzU7SrKvFyDnvWsVQ8
+              name: My group 1
+              user_id: 7d5bd32e-d463-4a4e-bed9-a9a54e6134bb
+            - id: oaAao91gGyFcI2E5fJwxn
+              name: My group 2
+              user_id: 7d5bd32e-d463-4a4e-bed9-a9a54e6134bb
+    "403":
+      description: Forbidden
+      $ref: ../components/responses/Problem.yaml
