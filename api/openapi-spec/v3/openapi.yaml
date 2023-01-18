@@ -24,9 +24,9 @@ paths:
 components:
   schemas:
     Group:
-      $ref: components/schemas/Group.yaml
+      $ref: "components/schemas/Group.yaml"
     CommandResponse:
-      $ref: components/schemas/CommandResponse.yaml
+      $ref: "components/schemas/CommandResponse.yaml"
   securitySchemes:
     api_key:
       type: apiKey
