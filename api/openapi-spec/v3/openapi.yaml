@@ -22,6 +22,11 @@ paths:
   "/group/create":
     $ref: "paths/group_create.yaml"
 components:
+  schemas:
+    Group:
+      $ref: "components/schemas/Group.yaml"
+    CommandResponse:
+      $ref: "components/schemas/CommandResponse.yaml"
   securitySchemes:
     api_key:
       type: apiKey

@@ -13,7 +13,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/Group.yaml
+            $ref: "../openapi.yaml#/components/schemas/Group"
           example:
             - id: R5vpzU7SrKvFyDnvWsVQ8
               name: My group 1
