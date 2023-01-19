@@ -1,25 +1,18 @@
-import { Configuration, GroupApi } from "@timada/cobase-client";
+import { Configuration, UserApi } from "@timada/cobase-client";
 import { createContext, ParentComponent, useContext } from "solid-js";
 import { useConfig } from "./Config";
 
-interface ApiContext {
-  group: GroupApi;
-}
+const Context = createContext<UserApi>();
 
-const Context = createContext<ApiContext>();
-
-export function useApi(): ApiContext {
-  return useContext(Context) as ApiContext;
+export function useApi(): UserApi {
+  return useContext(Context) as UserApi;
 }
 
 const Api: ParentComponent = (props) => {
   const config = useConfig();
-  const groupApi = new GroupApi(new Configuration({ basePath: config.api }));
-  const apiContext = { group: groupApi };
+  const api = new UserApi(new Configuration({ basePath: config.api }));
 
-  return (
-    <Context.Provider value={apiContext}>{props.children}</Context.Provider>
-  );
+  return <Context.Provider value={api}>{props.children}</Context.Provider>;
 };
 
 export default Api;
