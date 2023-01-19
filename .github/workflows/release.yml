@@ -6,7 +6,7 @@ on:
 
 jobs:
   service:
-    uses: timada-org/.github/.github/workflows/service-release.yml@v2.13.0
+    uses: timada-org/.github/.github/workflows/service-release.yml@v2.13.1
     with:
       service_name: cobase
     secrets:

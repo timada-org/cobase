@@ -5,4 +5,4 @@ on:
 
 jobs:
   service:
-    uses: timada-org/.github/.github/workflows/service-audit.yml@v2.13.0
+    uses: timada-org/.github/.github/workflows/service-audit.yml@v2.13.1
