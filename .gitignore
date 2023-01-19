@@ -4,3 +4,4 @@ openapi.json
 
 node_modules
 dist
+.pnpm
