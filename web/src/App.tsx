@@ -75,12 +75,16 @@ const Groups: Component = () => {
 
 const App: Component = () => {
   const config = useConfig();
-  let pikavClient = new Client({
+
+  const pikavClient = new Client({
     url: config.pikav.url,
     api: config.pikav.api,
     namespace: "cobase",
   });
-  const queryClient = new QueryClient();
+
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { staleTime: 0, refetchOnWindowFocus: false } },
+  });
 
   return (
     <Api>
