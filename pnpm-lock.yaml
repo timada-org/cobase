@@ -23,7 +23,7 @@ importers:
   web:
     specifiers:
       '@tanstack/solid-query': ^4.22.0
-      '@timada/cobase-client': ^0.4.2
+      '@timada/cobase-client': ^0.4.3
       '@typescript-eslint/parser': ^5.48.2
       eslint: ^8.32.0
       eslint-config-prettier: ^8.6.0
@@ -38,7 +38,7 @@ importers:
       vite-plugin-solid: ^2.5.0
     dependencies:
       '@tanstack/solid-query': 4.22.0_solid-js@1.6.9
-      '@timada/cobase-client': 0.4.2
+      '@timada/cobase-client': 0.4.3
       pikav: 0.3.1_solid-js@1.6.9
       solid-js: 1.6.9
     devDependencies:
@@ -743,8 +743,8 @@ packages:
       solid-js: 1.6.9
     dev: false
 
-  /@timada/cobase-client/0.4.2:
-    resolution: {integrity: sha512-qrOvzO48sMWOPQWVLmKE3OTEGBjogkeJSo/67rHykno0Y13EzB1WvM7/6LUHsMDilAxe4rM8UEpY0KI00bPZdw==}
+  /@timada/cobase-client/0.4.3:
+    resolution: {integrity: sha512-SJfzizm1FVtgyFuoUj/fZpryyNUEt2HrhiqfldDUvZ6kmfCA7k0QS9A8mXVBVNHcYzo+dD1tYH6EO0SbcIkfnQ==}
     dependencies:
       axios: 0.26.1
     transitivePeerDependencies:

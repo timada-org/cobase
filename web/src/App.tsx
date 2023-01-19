@@ -63,7 +63,9 @@ const Groups: Component = () => {
         </Match>
         <Match when={query.isSuccess}>
           <ul>
-            <For each={query.data}>{(group) => <li>{group.name}</li>}</For>
+            <For each={query.data?.data}>
+              {(group) => <li>{group.name}</li>}
+            </For>
           </ul>
         </Match>
       </Switch>
