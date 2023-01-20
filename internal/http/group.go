@@ -64,6 +64,6 @@ func createGroup(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 
 func configureGroups(router *httprouter.Router) {
-	router.POST("/api/groups/create", createGroup)
 	router.GET("/api/groups", listGroups)
+	router.POST("/api/groups/create", createGroup)
 }

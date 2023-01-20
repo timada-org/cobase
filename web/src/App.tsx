@@ -20,7 +20,7 @@ const Groups: Component = () => {
 
   const query = createQuery(
     () => ["groups"],
-    async () => (await api.getGroups()).data
+    async () => (await api.listGroups()).data
   );
 
   const mutation = createMutation({
