@@ -25,7 +25,7 @@ type JsonResponse struct {
 	Data interface{} `json:"data"`
 }
 
-func getGroups(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func groups(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	groups := []*Group{}
 
 	if id, err := gonanoid.New(); err == nil {
@@ -49,7 +49,7 @@ func getGroups(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 }
 
-func createGroup(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func groupsCreate(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id, err := gonanoid.New()
 	if err != nil {
 		panic(err)
@@ -64,6 +64,6 @@ func createGroup(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 
 func configureGroups(router *httprouter.Router) {
-	router.GET("/api/get-groups", getGroups)
-	router.POST("/api/create-group", createGroup)
+	router.POST("/api/groups/create", groupsCreate)
+	router.GET("/api/groups", groups)
 }

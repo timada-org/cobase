@@ -17,10 +17,10 @@ tags:
 servers:
   - url: "https://timada.co/cobase/api"
 paths:
-  "/get-groups":
-    $ref: "paths/get-groups.yaml"
-  "/create-group":
-    $ref: "paths/create-group.yaml"
+  "/groups":
+    $ref: "paths/groups.yaml"
+  "/groups/create":
+    $ref: "paths/groups_create.yaml"
 components:
   schemas:
     Group:

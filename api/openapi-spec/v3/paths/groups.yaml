@@ -4,7 +4,7 @@ get:
   summary: Get user groups
   description: |
     A list of groups owned by the user
-  operationId: getGroups
+  operationId: listGroups
   security:
     - api_key: []
   responses:
