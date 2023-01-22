@@ -7,7 +7,7 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/spf13/cobra"
 
-	"github.com/timada-org/cobase/internal/http"
+	"github.com/timada-org/cobase/internal/api"
 )
 
 type ServeConfig struct {
@@ -43,7 +43,7 @@ func NewServeCmd() (cmd *cobra.Command) {
 				os.Exit(1)
 			}
 
-			server := http.NewServer(http.ServerOptions{
+			server := api.NewServer(api.ServerOptions{
 				StaticPath: staticPath,
 				Addr:       cfg.Addr,
 			})
