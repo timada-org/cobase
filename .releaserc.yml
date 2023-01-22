@@ -11,17 +11,17 @@ plugins:
   - path: "@google/semantic-release-replace-plugin"
     replacements:
       - files:
-          - "api/openapi-spec/v3/openapi.yaml"
+          - "spec/openapi.yaml"
         from: "version: 1.0.0"
         to: "version: ${nextRelease.version}"
         countMatches: true
         results:
-          - file: "api/openapi-spec/v3/openapi.yaml"
+          - file: "spec/openapi.yaml"
             hasChanged: true
             numMatches: 1
             numReplacements: 1
   - path: "@semantic-release/exec"
-    prepareCmd: "node_modules/.bin/swagger-cli bundle api/openapi-spec/v3/openapi.yaml --outfile openapi.pretty.json"
+    prepareCmd: "node_modules/.bin/swagger-cli bundle spec/openapi.yaml --outfile openapi.pretty.json"
   - path: "@semantic-release/exec"
     prepareCmd: "node_modules/.bin/json5 openapi.pretty.json -o openapi.json"
   - path: "@semantic-release/exec"
