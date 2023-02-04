@@ -11,7 +11,7 @@ impl Migrate {
     pub fn new(path: &str) -> Result<Self, ConfigError> {
         Config::builder()
             .add_source(File::with_name(path))
-            .add_source(File::with_name(&format!("{}.local", path)).required(false))
+            .add_source(File::with_name(&format!("{path}.local")).required(false))
             .add_source(Environment::with_prefix(env!("CARGO_PKG_NAME")))
             .build()?
             .try_deserialize()
@@ -23,7 +23,7 @@ impl Migrate {
         let pg_options = dsn_options.database("postgres");
 
         let pool = PgPool::connect_with(pg_options).await.unwrap();
-        let query = format!("create database {};", db_name);
+        let query = format!("create database {db_name};");
         let mut conn = pool.acquire().await.unwrap();
         let _ = conn.execute(query.as_str()).await;
 

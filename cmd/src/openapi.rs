@@ -19,7 +19,7 @@ impl OpenApiCmd {
     pub fn new(path: &str) -> Result<Self, ConfigError> {
         Config::builder()
             .add_source(File::with_name(path))
-            .add_source(File::with_name(&format!("{}.local", path)).required(false))
+            .add_source(File::with_name(&format!("{path}.local")).required(false))
             .add_source(Environment::with_prefix(env!("CARGO_PKG_NAME")))
             .build()?
             .try_deserialize()
@@ -34,14 +34,14 @@ impl OpenApiCmd {
 
         // Open a file in write-only mode, returns `io::Result<File>`
         let mut file = match std::fs::File::create(path) {
-            Err(why) => panic!("couldn't create {}: {}", display, why),
+            Err(why) => panic!("couldn't create {display}: {why}"),
             Ok(file) => file,
         };
 
         // Write the `LOREM_IPSUM` string to `file`, returns `io::Result<()>`
         match file.write_all(openapi.as_bytes()) {
-            Err(why) => panic!("couldn't write to {}: {}", display, why),
-            Ok(_) => println!("successfully wrote to {}", display),
+            Err(why) => panic!("couldn't write to {display}: {why}"),
+            Ok(_) => println!("successfully wrote to {display}"),
         }
 
         Ok(())
