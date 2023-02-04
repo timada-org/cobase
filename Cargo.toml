@@ -7,3 +7,9 @@ members = [
     "cobase",
     "cobase-client"
 ]
+
+[profile.release]
+codegen-units = 1
+panic = "abort"
+lto = true
+strip = true

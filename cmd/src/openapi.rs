@@ -32,7 +32,7 @@ impl OpenApiCmd {
         let path = Path::new("openapi.json");
         let display = path.display();
 
-        // Open a file in write-only mode, returns `io::Result<File>` 
+        // Open a file in write-only mode, returns `io::Result<File>`
         let mut file = match std::fs::File::create(path) {
             Err(why) => panic!("couldn't create {display}: {why}"),
             Ok(file) => file,
