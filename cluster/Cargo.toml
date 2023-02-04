@@ -1,6 +1,6 @@
 [package]
 name = "cobase-cluster"
-version = "0.3.4"
+version = "0.5.0"
 edition = "2021"
 publish = false
 
