@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package timada;
+
+service Cobase {
+    rpc CreateGroup(CreateGroupRequest) returns (CreateGroupReply) {}
+}
+
+message CreateGroupRequest {
+}
+
+message CreateGroupReply {
+    bool success = 1;
+}

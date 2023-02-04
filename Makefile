@@ -12,10 +12,25 @@ standalone:
 	docker compose --profile standalone up -d --remove-orphans
 
 dev:
-	go run . serve -c configs/default.yml -s web/dist
+	COBASE_LOG=debug cargo run serve -c configs/default.yml
 
 lint:
-	golangci-lint run
+	cargo clippy --all-features -- -D warnings
 
-openapi.validate:
-	node_modules/.bin/swagger-cli validate spec/openapi.yaml
+migrate:
+	sqlx migrate run --source ./cli/migrations
+
+revert:
+	sqlx migrate revert --source ./cli/migrations
+
+prepare:
+	cargo sqlx prepare --merged
+
+openapi:
+	cargo run openapi -c configs/default.yml
+
+fmt:
+	cargo fmt -- --emit files
+
+clippy:
+	cargo clippy --all-features -- -D warnings

@@ -1,4 +1,7 @@
-node_modules
-.husky
+target
 .github
+docker-compose.yml
+Makefile
+.releaserc.yml
+node_modules
 .docker

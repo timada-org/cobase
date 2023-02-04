@@ -7,23 +7,12 @@ plugins:
   - "@semantic-release/npm"
   - path: "@semantic-release/github"
   - path: "@semantic-release/exec"
-    prepareCmd: "export DOCKER_CONTENT_TRUST=1 && docker pull golang@sha256:2381c1e5f8350a901597d633b2e517775eeac7a6682be39225a93b22cfd0f8bb"
-  - path: "@google/semantic-release-replace-plugin"
-    replacements:
-      - files:
-          - "spec/openapi.yaml"
-        from: "version: 1.0.0"
-        to: "version: ${nextRelease.version}"
-        countMatches: true
-        results:
-          - file: "spec/openapi.yaml"
-            hasChanged: true
-            numMatches: 1
-            numReplacements: 1
+    prepareCmd: "export DOCKER_CONTENT_TRUST=1 && docker pull rust@sha256:9178d58b0f144a93b1dba5317d55ef32e42c67d8da71aa63ff56a4bc66f9a888"
+  - "@timada/semantic-release-cargo"
   - path: "@semantic-release/exec"
-    prepareCmd: "node_modules/.bin/swagger-cli bundle spec/openapi.yaml --outfile openapi.pretty.json"
+    prepareCmd: "cargo update"
   - path: "@semantic-release/exec"
-    prepareCmd: "node_modules/.bin/json5 openapi.pretty.json -o openapi.json"
+    prepareCmd: "cargo run openapi -c configs/default.yml"
   - path: "@semantic-release/exec"
     prepareCmd: "pnpm --stream -r build"
   - path: "@codedependant/semantic-release-docker"
@@ -31,5 +20,7 @@ plugins:
     dockerImage: "cobase"
   - path: "@semantic-release/git"
     assets:
+      - "**/Cargo.toml"
+      - Cargo.lock
       - "**/package.json"
       - package.json
