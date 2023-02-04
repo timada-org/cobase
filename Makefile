@@ -31,3 +31,6 @@ openapi:
 
 fmt:
 	cargo fmt -- --emit files
+
+clippy:
+	cargo clippy --all-features -- -D warnings
