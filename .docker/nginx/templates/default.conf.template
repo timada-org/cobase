@@ -23,26 +23,26 @@ server {
 
   location ^~ /@vite {
     include /etc/nginx/proxy.conf;
-    proxy_pass            http://host.docker.internal:3010;
+    proxy_pass            http://host.docker.internal:3012;
   }
 
   location /__vite_ping {
     include /etc/nginx/proxy.conf;
-    proxy_pass            http://host.docker.internal:3010;
+    proxy_pass            http://host.docker.internal:3012;
   }
 
   location /src {
     include /etc/nginx/proxy.conf;
-    proxy_pass            http://host.docker.internal:3010;
+    proxy_pass            http://host.docker.internal:3012;
   }
 
   location /node_modules {
     include /etc/nginx/proxy.conf;
-    proxy_pass            http://host.docker.internal:3010;
+    proxy_pass            http://host.docker.internal:3012;
   }
 
   location / {
     include /etc/nginx/proxy.conf;
-    proxy_pass            http://host.docker.internal:3010;
+    proxy_pass            http://host.docker.internal:3012;
   }
 }

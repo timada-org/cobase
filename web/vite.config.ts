@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [solidPlugin()],
   server: {
     host: "0.0.0.0",
-    port: 3010,
+    port: 3012,
     proxy: {
       "/events": {
         target: "https://pikav.localhost",

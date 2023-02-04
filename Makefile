@@ -27,4 +27,4 @@ prepare:
 	cargo sqlx prepare --merged
 
 openapi:
-	cargo run openapi -c config/cobase.yml
+	cargo run openapi -c configs/default.yml
