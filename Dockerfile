@@ -1,13 +1,11 @@
-ARG BUILDER_IMAGE=golang@sha256:2381c1e5f8350a901597d633b2e517775eeac7a6682be39225a93b22cfd0f8bb
-############################
-# STEP 1 build executable binary
-############################
+ARG BUILDER_IMAGE=rust@sha256:9178d58b0f144a93b1dba5317d55ef32e42c67d8da71aa63ff56a4bc66f9a888
+
 FROM ${BUILDER_IMAGE} as builder
 
-# Install git + SSL ca certificates.
-# Git is required for fetching the dependencies.
-# Ca-certificates is required to call HTTPS endpoints.
-RUN apk update && apk add --no-cache git ca-certificates tzdata && update-ca-certificates
+RUN apk add --no-cache musl-dev tzdata \
+        openssl-dev openssl-libs-static \
+        pkgconf git libpq-dev \
+        protoc protobuf-dev
 
 # Create cobase
 ENV USER=cobase
@@ -22,41 +20,46 @@ RUN adduser \
     --no-create-home \
     --uid "${UID}" \
     "${USER}"
-WORKDIR $GOPATH/src/github.com/timada-org/cobase/
 
-# use modules
-COPY go.mod .
+# Set `SYSROOT` to a dummy path (default is /usr) because pkg-config-rs *always*
+# links those located in that path dynamically but we want static linking, c.f.
+# https://github.com/rust-lang/pkg-config-rs/blob/54325785816695df031cef3b26b6a9a203bbc01b/src/lib.rs#L613
+ENV SYSROOT=/dummy
 
-ENV GO111MODULE=on
-RUN go mod download && go mod verify
+# The env vars tell libsqlite3-sys to statically link libsqlite3.
+# ENV SQLITE3_STATIC=1 SQLITE3_LIB_DIR=/usr/lib/
 
-COPY . .
+# The env var tells pkg-config-rs to statically link libpq.
+ENV LIBPQ_STATIC=1
 
-# Build the binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
-    -ldflags='-w -s -extldflags "-static"' -a \
-    -o /go/bin/cobase .
+WORKDIR /home/cobase
+COPY . /home/cobase
 
-############################
-# STEP 2 build a small image
-############################
+RUN cargo build --bin cmd --release
+
 FROM scratch
+# ARG version=unknown
+# ARG release=unreleased
+# LABEL name="Product Name" \
+#       maintainer="info@company.com" \
+#       vendor="Company AG" \
+#       version=${version} \
+#       release=${release} \
+#       summary="High-level summary" \
+#       description="A bit more details about this specific container"
 
-# Import from builder.
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 
-# Copy our static executable
-COPY --from=builder /go/bin/cobase /go/bin/cobase
+COPY --from=builder /home/cobase/target/release/cmd /usr/bin/cobase
 COPY ./web/dist /etc/cobase/static
 COPY ./openapi.json /etc/cobase/static/
 
-# Use an unprivileged user.
 USER cobase:cobase
 
-EXPOSE 3011 3012
+EXPOSE 3010 3011
 
-ENTRYPOINT ["/go/bin/cobase"]
+ENTRYPOINT [ "cobase" ]
 CMD ["serve", "-c", "/etc/cobase/config.yml", "-s", "/etc/cobase/static"]

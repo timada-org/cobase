@@ -6,10 +6,11 @@ on:
 
 jobs:
   service:
-    uses: timada-org/.github/.github/workflows/service-release.yml@v2.13.2
+    uses: timada-org/.github/.github/workflows/service-release.yml@feat/service/switch-to-rust
     with:
       service_name: cobase
     secrets:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
       DOCKER_REGISTRY_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
       DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}

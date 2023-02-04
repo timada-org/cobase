@@ -1,5 +1,8 @@
-zone: eu-west-3
-addr: ":3011"
+zone: eu-west-3a
+
+addr:
+  api: "0.0.0.0:3010"
+  cluster: "[::1]:3011"
 
 log: debug
 
@@ -7,7 +10,7 @@ jwks:
   url: http://admin.oathkeeper.localhost:4456/.well-known/jwks.json
 
 pikav:
-  url: http://pikav.localhost:6750
+  url: http://pikav.localhost:6751
   namespace: cobase
 
 dsn: cockroach://cobase@127.0.0.1:26257/cobase?sslmode=disable
@@ -15,3 +18,10 @@ dsn: cockroach://cobase@127.0.0.1:26257/cobase?sslmode=disable
 pulsar:
   url: pulsar://127.0.0.1:6650
   namespace: non-persistent://public/default
+
+openapi:
+  servers:
+    - url: /cobase
+
+swagger_ui:
+  url: /cobase/openapi.json

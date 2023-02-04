@@ -1,0 +1,9 @@
+[workspace]
+
+members = [
+    "cmd",
+    "api",
+    "cluster",
+    "cobase",
+    "cobase-client"
+]
