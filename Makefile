@@ -28,3 +28,6 @@ prepare:
 
 openapi:
 	cargo run openapi -c configs/default.yml
+
+fmt:
+	cargo fmt -- --emit files

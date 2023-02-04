@@ -20,7 +20,10 @@ use super::projection::Group as ReadGroup;
     )
 )]
 #[get("")]
-async fn list_groups(state: web::Data<AppState>, payload: JwtPayload) -> Result<HttpResponse, Error> {
+async fn list_groups(
+    state: web::Data<AppState>,
+    payload: JwtPayload,
+) -> Result<HttpResponse, Error> {
     let groups = sqlx::query_as!(
         ReadGroup,
         "SELECT * FROM groups WHERE user_id = $1",
@@ -54,5 +57,7 @@ async fn create_group(
 }
 
 pub fn scope() -> Scope {
-    web::scope("/groups").service(list_groups).service(create_group)
+    web::scope("/groups")
+        .service(list_groups)
+        .service(create_group)
 }
