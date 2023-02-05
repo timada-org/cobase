@@ -22,5 +22,5 @@ plugins:
     assets:
       - "**/Cargo.toml"
       - Cargo.lock
-      - "**/package.json"
+      - "web/package.json"
       - package.json
