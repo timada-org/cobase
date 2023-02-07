@@ -24,8 +24,7 @@ const Groups: Component = () => {
   );
 
   const mutation = createMutation({
-    mutationFn: async (cmd: CreateCommand) =>
-      (await api.createGroup(cmd)).data,
+    mutationFn: async (cmd: CreateCommand) => (await api.createGroup(cmd)).data,
   });
 
   useSubscribe<Group>("groups/+", (event) => {
@@ -63,9 +62,7 @@ const Groups: Component = () => {
         </Match>
         <Match when={query.isSuccess}>
           <ul>
-            <For each={query.data}>
-              {(group) => <li>{group.name}</li>}
-            </For>
+            <For each={query.data}>{(group) => <li>{group.name}</li>}</For>
           </ul>
         </Match>
       </Switch>
