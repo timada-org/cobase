@@ -22,6 +22,7 @@ export default defineConfig({
         target: "https://timada.localhost/cobase",
         changeOrigin: true,
         secure: false,
+        rewrite: (path) => path.substring(4),
       },
       "/kratos": {
         target: "https://timada.localhost/kratos",
