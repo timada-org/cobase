@@ -2,7 +2,7 @@ zone: eu-west-3a
 
 addr:
   api: "0.0.0.0:3010"
-  cluster: "[::1]:3011"
+  cluster: "0.0.0.0:3011"
 
 log: debug
 

@@ -1,7 +1,7 @@
 import { Component, createSignal, For, Match, Switch } from "solid-js";
 import { Provider as PikavProvider, useSubscribe } from "pikav/solid";
 import { Client } from "pikav";
-import { Group, CreateGroupRequest } from "@timada/cobase-client";
+import { Group, CreateCommand } from "@timada/cobase-client";
 
 import {
   QueryClient,
@@ -24,8 +24,7 @@ const Groups: Component = () => {
   );
 
   const mutation = createMutation({
-    mutationFn: async (cmd: CreateGroupRequest) =>
-      (await api.createGroup(cmd)).data,
+    mutationFn: async (cmd: CreateCommand) => (await api.createGroup(cmd)).data,
   });
 
   useSubscribe<Group>("groups/+", (event) => {
@@ -63,9 +62,7 @@ const Groups: Component = () => {
         </Match>
         <Match when={query.isSuccess}>
           <ul>
-            <For each={query.data?.data}>
-              {(group) => <li>{group.name}</li>}
-            </For>
+            <For each={query.data}>{(group) => <li>{group.name}</li>}</For>
           </ul>
         </Match>
       </Switch>
