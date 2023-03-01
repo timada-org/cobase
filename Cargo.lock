@@ -544,7 +544,7 @@ dependencies = [
 
 [[package]]
 name = "cmd"
-version = "0.5.2"
+version = "0.5.3"
 dependencies = [
  "actix-rt",
  "clap",
@@ -561,7 +561,7 @@ dependencies = [
 
 [[package]]
 name = "cobase"
-version = "0.5.2"
+version = "0.5.3"
 dependencies = [
  "nanoid",
  "serde",
@@ -571,7 +571,7 @@ dependencies = [
 
 [[package]]
 name = "cobase-api"
-version = "0.5.2"
+version = "0.5.3"
 dependencies = [
  "actix",
  "actix-files",
@@ -596,7 +596,7 @@ dependencies = [
 
 [[package]]
 name = "cobase-cluster"
-version = "0.5.2"
+version = "0.5.3"
 dependencies = [
  "cobase",
  "prost",
@@ -879,9 +879,9 @@ checksum = "0206175f82b8d6bf6652ff7d71a1e27fd2e4efde587fd368662814d6ec1d9ce0"
 
 [[package]]
 name = "evento"
-version = "0.4.3"
+version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2fc000663e5a23a5f92b754ee039f48dc781b7d7bb562914df4738eb7f3c73d1"
+checksum = "e4ae75bc98c1742d654cdddd6bc6e997824ed0698386081f6d89ec4d492ba7fb"
 dependencies = [
  "actix",
  "actix-web",
@@ -2572,7 +2572,7 @@ dependencies = [
 
 [[package]]
 name = "timada-cobase-client"
-version = "0.5.2"
+version = "0.5.3"
 dependencies = [
  "prost",
  "prost-derive",
