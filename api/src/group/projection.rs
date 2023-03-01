@@ -1,8 +1,10 @@
-use evento::Aggregate;
+use evento::{Aggregate, Subscriber};
+use futures::FutureExt;
 use serde::{Deserialize, Serialize};
+use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::{group::event::GroupEvent, projection::Projection};
+use crate::{command::CommandMetadata, group::event::GroupEvent};
 
 use super::{
     aggregate::{self},
@@ -16,43 +18,48 @@ pub struct Group {
     pub user_id: Uuid,
 }
 
-pub async fn start(projection: &Projection<'_>) -> Result<(), pulsar::Error> {
-    projection
-        .spawn("group", |pikav, db, event, metadata| async move {
-            let group_event: GroupEvent = event.name.parse().unwrap();
+pub fn groups() -> Subscriber {
+    Subscriber::new("groups")
+        .filter("group/#")
+        .handler(|event, ctx| {
+            let db = ctx.0.read().extract::<PgPool>().clone();
+            let pikav = ctx.0.read().extract::<pikav_client::Client>().clone();
 
-            match group_event {
-                GroupEvent::Created => {
-                    let data: Created = event.to_data()?;
+            async move {
+                let group_event: GroupEvent = event.name.parse()?;
+                let metadata = event.to_metadata::<CommandMetadata>()?;
 
-                    let group = Group {
-                        id: aggregate::Group::to_id(event.aggregate_id),
-                        name: data.name,
-                        user_id: Uuid::parse_str(&metadata.user_id)?,
-                    };
+                match group_event {
+                    GroupEvent::Created => {
+                        let data: Created = event.to_data()?;
 
-                    sqlx::query!(
-                        "INSERT INTO groups (id, name, user_id) VALUES ($1, $2, $3)",
-                        &group.id,
-                        &group.name,
-                        &group.user_id
-                    )
-                    .execute(&db)
-                    .await?;
+                        let group = Group {
+                            id: aggregate::Group::to_id(event.aggregate_id),
+                            name: data.name,
+                            user_id: Uuid::parse_str(&metadata.user_id)?,
+                        };
 
-                    pikav.publish(vec![pikav_client::Event {
-                        user_id: metadata.user_id,
-                        topic: format!("groups/{}", group.id),
-                        name: "created".to_owned(),
-                        data: Some(serde_json::to_value(group).unwrap().into()),
-                        metadata: None,
-                    }]);
-                }
+                        sqlx::query!(
+                            "INSERT INTO groups (id, name, user_id) VALUES ($1, $2, $3)",
+                            &group.id,
+                            &group.name,
+                            &group.user_id
+                        )
+                        .execute(&db)
+                        .await?;
+
+                        pikav.publish(vec![pikav_client::Event {
+                            user_id: metadata.user_id,
+                            topic: format!("groups/{}", group.id),
+                            name: "created".to_owned(),
+                            data: Some(serde_json::to_value(group).unwrap().into()),
+                            metadata: None,
+                        }]);
+                    }
+                };
+
+                Ok(())
             }
-
-            Ok(())
+            .boxed()
         })
-        .await?;
-
-    Ok(())
 }

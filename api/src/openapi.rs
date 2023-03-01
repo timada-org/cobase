@@ -1,13 +1,12 @@
 use actix_web::{get, web, HttpResponse};
 use utoipa::{openapi, OpenApi};
 
-use crate::command;
 use crate::group;
 
 #[derive(OpenApi)]
 #[openapi(
     paths(group::create_group, group::list_groups),
-    components(schemas(group::Group, group::CreateCommand, command::JsonResponse)),
+    components(schemas(group::Group, group::CreateCommand)),
     tags(
         (name = "Cobase", description = "Cobase api endpoints.")
     )

@@ -18,10 +18,10 @@ lint:
 	cargo clippy --all-features -- -D warnings
 
 migrate:
-	sqlx migrate run --source ./cli/migrations
+	sqlx migrate run --source ./cmd/migrations
 
 revert:
-	sqlx migrate revert --source ./cli/migrations
+	sqlx migrate revert --source ./cmd/migrations
 
 prepare:
 	cargo sqlx prepare --merged

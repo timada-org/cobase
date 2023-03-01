@@ -15,10 +15,6 @@ pikav:
 
 dsn: cockroach://cobase@127.0.0.1:26257/cobase?sslmode=disable
 
-pulsar:
-  url: pulsar://127.0.0.1:6650
-  namespace: non-persistent://public/default
-
 openapi:
   servers:
     - url: /cobase

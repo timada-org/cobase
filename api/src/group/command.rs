@@ -1,10 +1,10 @@
 use actix::{ActorFutureExt, Context, Handler, Message, ResponseActFuture, WrapFuture};
-use evento::Event;
+use evento::{Event, CommandInfo, CommandResult};
 use nanoid::nanoid;
 use serde::Deserialize;
 use utoipa::{IntoParams, ToSchema};
 
-use crate::command::{Command, CommandInfo, CommandResult};
+use crate::command::{Command};
 
 use super::event::{Created, GroupEvent};
 
