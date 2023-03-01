@@ -5,6 +5,9 @@ use cobase_cluster::{Cluster, ClusterOptions};
 use config::{Config, ConfigError, Environment, File};
 use serde::Deserialize;
 use tracing::Level;
+use tracing_subscriber::{
+    filter, prelude::__tracing_subscriber_SubscriberExt, util::SubscriberInitExt,
+};
 
 #[derive(Debug, Deserialize)]
 pub struct ServeAddr {
@@ -35,17 +38,21 @@ impl Serve {
     }
 
     pub async fn run(&self) -> Result<(), std::io::Error> {
-        let subscriber = tracing_subscriber::FmtSubscriber::builder()
-            .with_max_level(
-                self.log
-                    .as_ref()
-                    .map(|log| Level::from_str(log).expect("failed to deserialize log"))
-                    .unwrap_or(Level::ERROR),
-            )
-            .finish();
+        let log = self
+            .log
+            .as_ref()
+            .map(|log| Level::from_str(log).expect("failed to deserialize log"))
+            .unwrap_or(Level::ERROR);
 
-        tracing::subscriber::set_global_default(subscriber)
-            .expect("setting default subscriber failed");
+        let filter = filter::Targets::new()
+            .with_target("evento", log)
+            .with_target("cobase_api", log)
+            .with_target("cobase_cluster", log);
+
+        tracing_subscriber::registry()
+            .with(tracing_subscriber::fmt::layer())
+            .with(filter)
+            .init();
 
         let cluster = Cluster::new(ClusterOptions {
             addr: self.addr.cluster.to_owned(),

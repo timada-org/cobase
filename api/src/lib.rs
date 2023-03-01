@@ -21,7 +21,7 @@ use query::Query;
 use serde::Deserialize;
 use sqlx::PgPool;
 use std::{path::PathBuf, time::SystemTime};
-use tracing::error;
+use tracing::{error, info};
 use utoipa::{openapi::Server, OpenApi};
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -126,6 +126,8 @@ impl App {
         openapi.servers = self.options.openapi.servers.clone();
 
         let swagger_ui_url = self.options.swagger_ui.url.to_owned();
+
+        info!("Cobase api listening on {}", &self.options.listen);
 
         HttpServer::new(move || {
             ActixApp::new()

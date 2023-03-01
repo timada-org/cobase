@@ -21,7 +21,7 @@ parse-display = "0.8.0"
 tokio = { version = "1.25.0", features = ["rt-multi-thread", "macros"] }
 futures = "0.3.26"
 validator = { version = "0.16.0", features = ["derive"] }
-evento = { version = "0.4.3", features = ["actix-web"] }
+evento = { version = "0.4.5", features = ["actix-web"] }
 sqlx = { version = "0.6.2", features = ["runtime-actix-rustls", "postgres", "chrono", "uuid", "json", "offline"] }
 utoipa = { version = "3.0.3", features = ["actix_extras", "uuid"] }
 utoipa-swagger-ui = { version = "3.0.2", features = ["actix-web"] }
