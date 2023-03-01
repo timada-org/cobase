@@ -7,7 +7,7 @@ use crate::group;
 #[derive(OpenApi)]
 #[openapi(
     paths(group::create_group, group::list_groups),
-    components(schemas(group::Group, group::CreateCommand, command::JsonResponse)),
+    components(schemas(group::Group, group::CreateCommand, command::CommandJsonResponse)),
     tags(
         (name = "Cobase", description = "Cobase api endpoints.")
     )

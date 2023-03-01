@@ -1,16 +1,12 @@
-use std::ops::DerefMut;
-
 use actix_jwks::JwtPayload;
 use actix_web::{get, post, web, HttpResponse, Scope};
+use evento::{CommandError, CommandResponse};
 use uuid::Uuid;
 
-use crate::command::CommandResponse;
-use crate::error::Error;
 use crate::AppState;
 
 use super::aggregate::Group;
 use super::command::CreateCommand;
-use super::projection::Group as ReadGroup;
 
 #[utoipa::path(
     tag = "cobase",
@@ -23,14 +19,13 @@ use super::projection::Group as ReadGroup;
 async fn list_groups(
     state: web::Data<AppState>,
     payload: JwtPayload,
-) -> Result<HttpResponse, Error> {
-    let groups = sqlx::query_as!(
-        ReadGroup,
-        "SELECT * FROM groups WHERE user_id = $1",
-        Uuid::parse_str(&payload.subject)?
-    )
-    .fetch_all(&state.db)
-    .await?;
+) -> Result<HttpResponse, CommandError> {
+    let groups = state
+        .query
+        .send(crate::group::ListGroupsQuery {
+            user_id: Uuid::parse_str(&payload.subject)?,
+        })
+        .await??;
 
     Ok(HttpResponse::Ok().json(groups))
 }
@@ -40,7 +35,7 @@ async fn list_groups(
     context_path = "/api/groups",
     request_body=CreateCommand,
     responses(
-        (status = 200, description = "Create group did not result error", body = JsonResponse),
+        (status = 200, description = "Create group did not result error", body = CommandJsonResponse),
     )
 )]
 #[post("/create")]
@@ -48,12 +43,18 @@ async fn create_group(
     state: web::Data<AppState>,
     input: web::Json<CreateCommand>,
     payload: JwtPayload,
-) -> Result<HttpResponse, Error> {
-    let mut producer = state.group_producer.lock().await;
-
-    CommandResponse(state.cmd.send(input.0).await)
-        .to_response::<Group>(&state.zone, &state.store, producer.deref_mut(), payload)
-        .await
+) -> HttpResponse {
+    CommandResponse(
+        state
+            .cmd
+            .send(crate::command::CommandInput {
+                user_id: payload.subject,
+                input: input.0,
+            })
+            .await,
+    )
+    .to_response::<Group, _>(&state.publisher)
+    .await
 }
 
 pub fn scope() -> Scope {

@@ -1,8 +1,7 @@
 mod command;
-mod error;
 mod group;
 mod openapi;
-mod projection;
+mod query;
 
 use actix_files::NamedFile;
 pub use openapi::ApiDoc;
@@ -17,23 +16,19 @@ use actix_web::{
     App as ActixApp, HttpServer,
 };
 use command::Command;
-use evento::{EventStore, PgEngine};
-use projection::Projection;
-use pulsar::{Producer, Pulsar, TokioExecutor};
+use evento::{PgEngine, Publisher};
+use query::Query;
 use serde::Deserialize;
 use sqlx::PgPool;
-use std::{path::PathBuf, sync::Arc, time::SystemTime};
-use tokio::sync::Mutex;
+use std::{path::PathBuf, time::SystemTime};
 use tracing::error;
 use utoipa::{openapi::Server, OpenApi};
 use utoipa_swagger_ui::SwaggerUi;
 
 pub struct AppState {
-    pub zone: String,
     pub cmd: Addr<Command>,
-    pub store: EventStore<PgEngine>,
-    pub db: PgPool,
-    pub group_producer: Arc<Mutex<Producer<TokioExecutor>>>,
+    pub query: Addr<Query>,
+    pub publisher: Publisher<evento::store::PgEngine>,
 }
 
 #[derive(Deserialize, Clone)]
@@ -43,12 +38,6 @@ pub struct JwksOptions {
 
 #[derive(Deserialize, Clone)]
 pub struct PikavOptions {
-    pub url: String,
-    pub namespace: String,
-}
-
-#[derive(Deserialize, Clone)]
-pub struct PulsarOptions {
     pub url: String,
     pub namespace: String,
 }
@@ -69,7 +58,6 @@ pub struct AppOptions {
     pub jwks: JwksOptions,
     pub pikav: PikavOptions,
     pub dsn: String,
-    pub pulsar: PulsarOptions,
     pub openapi: OpenApiOptions,
     pub swagger_ui: SwaggerUIOptions,
 }
@@ -84,8 +72,14 @@ impl App {
     }
 
     pub async fn run(&self) -> std::io::Result<()> {
-        let zone = self.options.zone.to_owned();
-        let jwks_client = JwksClient::new(&self.options.jwks.url);
+        let jwks_client = match JwksClient::new(&self.options.jwks.url).await {
+            Ok(c) => c,
+            Err(e) => {
+                error!("{e}");
+
+                std::process::exit(1)
+            }
+        };
 
         let pikva_client = match pikav_client::Client::new(pikav_client::ClientOptions {
             url: self.options.pikav.url.to_owned(),
@@ -108,38 +102,25 @@ impl App {
             }
         };
 
-        let pulsar = match create_pulsar(&self.options).await {
-            Ok(pulsar) => pulsar,
+        let store = PgEngine::new(pool.clone());
+        let query = Query::new(pool.clone()).start();
+        let cmd = Command::new(store.clone()).start();
+        let res = store
+            .name(format!("cobase.{}", self.options.zone))
+            .data(pool)
+            .data(pikva_client.clone())
+            .subscribe(group::projection::groups())
+            .run()
+            .await;
+
+        let publisher = match res {
+            Ok(p) => p,
             Err(e) => {
                 error!("{e}");
 
                 std::process::exit(1)
             }
         };
-
-        let projection = Projection {
-            db: &pool,
-            pulsar: &pulsar,
-            options: &self.options,
-            pikav: &pikva_client,
-        };
-
-        if let Err(e) = group::start(&projection).await {
-            error!("{e}");
-
-            std::process::exit(1)
-        }
-
-        let group_producer = match create_producer("group", &pulsar, &self.options).await {
-            Ok(producer) => producer,
-            Err(e) => {
-                error!("{e}");
-
-                std::process::exit(1)
-            }
-        };
-
-        let cmd = Command::new(pool.clone()).start();
 
         let mut openapi = openapi::ApiDoc::openapi();
         openapi.servers = self.options.openapi.servers.clone();
@@ -149,11 +130,9 @@ impl App {
         HttpServer::new(move || {
             ActixApp::new()
                 .app_data(web::Data::new(AppState {
-                    zone: zone.to_owned(),
                     cmd: cmd.clone(),
-                    store: PgEngine::new(pool.clone()),
-                    group_producer: group_producer.clone(),
-                    db: pool.clone(),
+                    query: query.clone(),
+                    publisher: publisher.clone(),
                 }))
                 .app_data(Data::new(jwks_client.clone()))
                 .app_data(Data::new(openapi.clone()))
@@ -201,25 +180,6 @@ impl App {
     }
 }
 
-async fn create_producer(
-    name: &str,
-    pulsar: &Pulsar<TokioExecutor>,
-    options: &AppOptions,
-) -> Result<Arc<Mutex<Producer<TokioExecutor>>>, pulsar::Error> {
-    pulsar
-        .producer()
-        .with_topic(format!("{}/{}", options.pulsar.namespace, name))
-        .with_name(format!("cobase.{}", options.zone))
-        .build()
-        .await
-        .map(|producer| Arc::new(Mutex::new(producer)))
-}
-
-async fn create_pulsar(options: &AppOptions) -> Result<Pulsar<TokioExecutor>, pulsar::Error> {
-    Pulsar::builder(&options.pulsar.url, TokioExecutor)
-        .build()
-        .await
-}
 #[get("")]
 async fn index() -> actix_web::Result<NamedFile> {
     let path: PathBuf = "./files/index.html".parse().unwrap();
