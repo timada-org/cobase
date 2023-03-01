@@ -2,6 +2,7 @@ use timada_cobase_client::timada::{
     cobase_server::CobaseServer, CreateGroupReply, CreateGroupRequest,
 };
 use tonic::{transport::Server, Request, Response, Status};
+use tracing::info;
 
 #[derive(Default)]
 pub struct Cobase {}
@@ -33,10 +34,9 @@ impl Cluster {
 
     pub async fn serve(&self) -> Result<(), tonic::transport::Error> {
         let addr = self.options.addr.parse().unwrap();
-
         let cobase = Cobase {};
 
-        println!("CobaseServer listening on {addr}");
+        info!("Cobase grpc listening on {addr}");
 
         Server::builder()
             .add_service(CobaseServer::new(cobase))

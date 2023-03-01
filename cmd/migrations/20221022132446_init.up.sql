@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS _evento_events
     created_at timestamptz NOT NULL
 );
 
-CREATE INDEX idk_aggregate_id ON _evento_events (aggregate_id);
--- CREATE INDEX idk_metadata ON _evento_events USING gin (metadata jsonb_path_ops);
+CREATE INDEX ON _evento_events (aggregate_id);
+CREATE INDEX ON _evento_events USING GIN (metadata jsonb_ops);
 
 CREATE TABLE IF NOT EXISTS _evento_deadletters
 (
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS _evento_subscriptions
     created_at timestamptz NOT NULL
 );
 
-CREATE UNIQUE INDEX idk_key ON _evento_subscriptions (key);
+CREATE UNIQUE INDEX ON _evento_subscriptions (key);
 
 CREATE TABLE IF NOT EXISTS groups
 (
