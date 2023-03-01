@@ -34,3 +34,6 @@ fmt:
 
 clippy:
 	cargo clippy --all-features -- -D warnings
+
+clippy.fix:
+	cargo clippy --fix --all-features -- -D warnings

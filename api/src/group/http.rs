@@ -35,7 +35,7 @@ async fn list_groups(
     context_path = "/api/groups",
     request_body=CreateCommand,
     responses(
-        (status = 200, description = "Create group did not result error", body = JsonResponse),
+        (status = 200, description = "Create group did not result error", body = CommandJsonResponse),
     )
 )]
 #[post("/create")]
@@ -44,9 +44,17 @@ async fn create_group(
     input: web::Json<CreateCommand>,
     payload: JwtPayload,
 ) -> HttpResponse {
-    CommandResponse(state.cmd.send(input.0).await)
-        .to_response::<Group, _>(&state.publisher)
-        .await
+    CommandResponse(
+        state
+            .cmd
+            .send(crate::command::CommandInput {
+                user_id: payload.subject,
+                input: input.0,
+            })
+            .await,
+    )
+    .to_response::<Group, _>(&state.publisher)
+    .await
 }
 
 pub fn scope() -> Scope {
