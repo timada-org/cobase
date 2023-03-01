@@ -1,8 +1,6 @@
 use std::str::FromStr;
 
-use cobase_api::{
-    App, AppOptions, JwksOptions, OpenApiOptions, PikavOptions, SwaggerUIOptions,
-};
+use cobase_api::{App, AppOptions, JwksOptions, OpenApiOptions, PikavOptions, SwaggerUIOptions};
 use cobase_cluster::{Cluster, ClusterOptions};
 use config::{Config, ConfigError, Environment, File};
 use serde::Deserialize;
