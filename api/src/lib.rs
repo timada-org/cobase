@@ -10,7 +10,6 @@ use actix::{Actor, Addr};
 use actix_jwks::JwksClient;
 use actix_web::{
     dev::{fn_service, ServiceRequest, ServiceResponse},
-    get,
     http::header::{self, HeaderValue, HttpDate, TryIntoHeaderValue},
     web::{self, Data},
     App as ActixApp, HttpServer,
@@ -20,7 +19,7 @@ use evento::{PgEngine, Publisher};
 use query::Query;
 use serde::Deserialize;
 use sqlx::PgPool;
-use std::{path::PathBuf, time::SystemTime};
+use std::time::SystemTime;
 use tracing::{error, info};
 use utoipa::{openapi::Server, OpenApi};
 use utoipa_swagger_ui::SwaggerUi;
@@ -168,7 +167,7 @@ impl App {
                                 app.public_folder.to_owned()
                             ))
                             .await?;
-                        
+
                             let mut res = file.into_response(&req);
                             let headers = res.headers_mut();
 
@@ -197,10 +196,4 @@ impl App {
         .run()
         .await
     }
-}
-
-#[get("")]
-async fn index() -> actix_web::Result<NamedFile> {
-    let path: PathBuf = "./files/index.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
 }
