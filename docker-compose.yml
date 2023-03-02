@@ -30,6 +30,7 @@ services:
   cobase:
     image: timada0/cobase
     ports:
+      - 3010:3010
       - 3011:3011
     volumes:
       - type: bind
