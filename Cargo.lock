@@ -544,7 +544,7 @@ dependencies = [
 
 [[package]]
 name = "cmd"
-version = "0.5.4"
+version = "0.5.5"
 dependencies = [
  "actix-rt",
  "clap",
@@ -561,7 +561,7 @@ dependencies = [
 
 [[package]]
 name = "cobase"
-version = "0.5.4"
+version = "0.5.5"
 dependencies = [
  "nanoid",
  "serde",
@@ -571,7 +571,7 @@ dependencies = [
 
 [[package]]
 name = "cobase-api"
-version = "0.5.4"
+version = "0.5.5"
 dependencies = [
  "actix",
  "actix-files",
@@ -596,7 +596,7 @@ dependencies = [
 
 [[package]]
 name = "cobase-cluster"
-version = "0.5.4"
+version = "0.5.5"
 dependencies = [
  "cobase",
  "prost",
@@ -2572,7 +2572,7 @@ dependencies = [
 
 [[package]]
 name = "timada-cobase-client"
-version = "0.5.4"
+version = "0.5.5"
 dependencies = [
  "prost",
  "prost-derive",
