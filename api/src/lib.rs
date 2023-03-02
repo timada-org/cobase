@@ -10,7 +10,6 @@ use actix::{Actor, Addr};
 use actix_jwks::JwksClient;
 use actix_web::{
     dev::{fn_service, ServiceRequest, ServiceResponse},
-    get,
     http::header::{self, HeaderValue, HttpDate, TryIntoHeaderValue},
     web::{self, Data},
     App as ActixApp, HttpServer,
@@ -20,7 +19,7 @@ use evento::{PgEngine, Publisher};
 use query::Query;
 use serde::Deserialize;
 use sqlx::PgPool;
-use std::{path::PathBuf, time::SystemTime};
+use std::time::SystemTime;
 use tracing::{error, info};
 use utoipa::{openapi::Server, OpenApi};
 use utoipa_swagger_ui::SwaggerUi;
@@ -29,6 +28,7 @@ pub struct AppState {
     pub cmd: Addr<Command>,
     pub query: Addr<Query>,
     pub publisher: Publisher<evento::store::PgEngine>,
+    pub public_folder: String,
 }
 
 #[derive(Deserialize, Clone)]
@@ -60,6 +60,7 @@ pub struct AppOptions {
     pub dsn: String,
     pub openapi: OpenApiOptions,
     pub swagger_ui: SwaggerUIOptions,
+    pub public_folder: Option<String>,
 }
 
 pub struct App {
@@ -126,6 +127,11 @@ impl App {
         openapi.servers = self.options.openapi.servers.clone();
 
         let swagger_ui_url = self.options.swagger_ui.url.to_owned();
+        let public_folder = self
+            .options
+            .public_folder
+            .to_owned()
+            .unwrap_or("/etc/cobase/static".to_owned());
 
         info!("Cobase api listening on {}", &self.options.listen);
 
@@ -135,6 +141,7 @@ impl App {
                     cmd: cmd.clone(),
                     query: query.clone(),
                     publisher: publisher.clone(),
+                    public_folder: public_folder.to_owned(),
                 }))
                 .app_data(Data::new(jwks_client.clone()))
                 .app_data(Data::new(openapi.clone()))
@@ -144,15 +151,24 @@ impl App {
                     SwaggerUi::new("/swagger-ui/{_:.*}")
                         .url(swagger_ui_url.to_owned(), openapi.clone()),
                 )
-                .service(actix_files::Files::new("/static", "./static"))
+                .service(actix_files::Files::new("/static", public_folder.to_owned()))
                 .service(
                     actix_files::Files::new("/", "./t1q69LzMP0I9")
                         .prefer_utf8(true)
-                        .default_handler(fn_service(|req: ServiceRequest| async {
+                        .default_handler(fn_service(|req: ServiceRequest| async move {
                             let (req, _) = req.into_parts();
-                            let file = NamedFile::open_async("./static/index.html").await?;
-                            let mut res = file.into_response(&req);
 
+                            let app = req
+                                .app_data::<Data<AppState>>()
+                                .expect("AppState is not configured correctly.");
+
+                            let file = NamedFile::open_async(format!(
+                                "{}/index.html",
+                                app.public_folder.to_owned()
+                            ))
+                            .await?;
+
+                            let mut res = file.into_response(&req);
                             let headers = res.headers_mut();
 
                             headers.insert(
@@ -180,10 +196,4 @@ impl App {
         .run()
         .await
     }
-}
-
-#[get("")]
-async fn index() -> actix_web::Result<NamedFile> {
-    let path: PathBuf = "./files/index.html".parse().unwrap();
-    Ok(NamedFile::open(path)?)
 }

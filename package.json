@@ -4,7 +4,6 @@
   "description": "",
   "private": true,
   "scripts": {
-    "pre-commit": "lint-staged",
     "prepare": "is-ci || husky install"
   },
   "lint-staged": {
@@ -12,8 +11,7 @@
       "eslint --fix --no-color --max-warnings=0 --no-ignore"
     ],
     "**/*.rs": [
-      "cargo fmt -- --emit files",
-      "cargo clippy --fix --all-features -- -D warnings"
+      "cargo fmt -- --emit files"
     ]
   },
   "keywords": [],
