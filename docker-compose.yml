@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   cobase-cockroach-init:
-    image: cockroachdb/cockroach:v22.1.10
+    image: cockroachdb/cockroach:v22.2.5
     command: >
       sql --insecure --host="cockroach" --execute="
         CREATE DATABASE IF NOT EXISTS cobase;

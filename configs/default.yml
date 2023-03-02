@@ -6,6 +6,8 @@ addr:
 
 log: debug
 
+public_folder: ./web/dist
+
 jwks:
   url: http://admin.oathkeeper.localhost:4456/.well-known/jwks.json
 

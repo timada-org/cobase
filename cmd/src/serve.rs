@@ -25,6 +25,7 @@ pub struct Serve {
     pub openapi: OpenApiOptions,
     pub swagger_ui: SwaggerUIOptions,
     pub log: Option<String>,
+    pub public_folder: Option<String>,
 }
 
 impl Serve {
@@ -66,6 +67,7 @@ impl Serve {
             pikav: self.pikav.clone(),
             openapi: self.openapi.clone(),
             swagger_ui: self.swagger_ui.clone(),
+            public_folder: self.public_folder.clone(),
         });
 
         actix_rt::spawn(async move { cluster.serve().await });

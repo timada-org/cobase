@@ -62,4 +62,4 @@ USER cobase:cobase
 EXPOSE 3010 3011
 
 ENTRYPOINT [ "cobase" ]
-CMD ["serve", "-c", "/etc/cobase/config.yml", "-s", "/etc/cobase/static"]
+CMD ["serve", "-c", "/etc/cobase/config.yml"]

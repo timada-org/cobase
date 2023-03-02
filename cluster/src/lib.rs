@@ -11,10 +11,8 @@ pub struct Cobase {}
 impl timada_cobase_client::timada::cobase_server::Cobase for Cobase {
     async fn create_group(
         &self,
-        request: Request<CreateGroupRequest>,
+        _request: Request<CreateGroupRequest>,
     ) -> Result<Response<CreateGroupReply>, Status> {
-        println!("Request create_group from {:?}", request.remote_addr());
-
         Ok(Response::new(CreateGroupReply { success: true }))
     }
 }
