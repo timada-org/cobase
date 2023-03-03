@@ -563,10 +563,20 @@ dependencies = [
 name = "cobase"
 version = "0.5.5"
 dependencies = [
+ "actix",
+ "actix-jwks",
+ "evento",
+ "futures",
  "nanoid",
+ "parse-display",
+ "pikav-client",
  "serde",
  "serde_json",
+ "sqlx",
  "thiserror",
+ "utoipa",
+ "uuid",
+ "validator",
 ]
 
 [[package]]
@@ -577,21 +587,16 @@ dependencies = [
  "actix-files",
  "actix-jwks",
  "actix-web",
+ "cobase",
  "evento",
- "futures",
- "nanoid",
- "parse-display",
  "pikav-client",
  "serde",
  "serde_json",
  "sqlx",
- "thiserror",
- "tokio",
  "tracing",
  "utoipa",
  "utoipa-swagger-ui",
  "uuid",
- "validator",
 ]
 
 [[package]]
