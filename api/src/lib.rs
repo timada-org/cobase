@@ -1,7 +1,5 @@
-mod command;
 mod group;
 mod openapi;
-mod query;
 
 use actix_files::NamedFile;
 pub use openapi::ApiDoc;
@@ -14,9 +12,8 @@ use actix_web::{
     web::{self, Data},
     App as ActixApp, HttpServer,
 };
-use command::Command;
+use cobase::{command::Command, query::Query};
 use evento::{PgEngine, Publisher};
-use query::Query;
 use serde::Deserialize;
 use sqlx::PgPool;
 use std::time::SystemTime;
@@ -110,7 +107,7 @@ impl App {
             .name(format!("cobase.{}", self.options.zone))
             .data(pool)
             .data(pikva_client.clone())
-            .subscribe(group::projection::groups())
+            .subscribe(cobase::group::projection::groups())
             .run()
             .await;
 

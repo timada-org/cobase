@@ -1,12 +1,11 @@
 use actix_jwks::JwtPayload;
 use actix_web::{get, post, web, HttpResponse, Scope};
+use cobase::command::CommandInput;
+use cobase::group::{CreateCommand, Group, ListGroupsQuery};
 use evento::{CommandError, CommandResponse};
 use uuid::Uuid;
 
 use crate::AppState;
-
-use super::aggregate::Group;
-use super::command::CreateCommand;
 
 #[utoipa::path(
     tag = "cobase",
@@ -22,7 +21,7 @@ async fn list_groups(
 ) -> Result<HttpResponse, CommandError> {
     let groups = state
         .query
-        .send(crate::group::ListGroupsQuery {
+        .send(ListGroupsQuery {
             user_id: Uuid::parse_str(&payload.subject)?,
         })
         .await??;
@@ -47,7 +46,7 @@ async fn create_group(
     CommandResponse(
         state
             .cmd
-            .send(crate::command::CommandInput {
+            .send(CommandInput {
                 user_id: payload.subject,
                 input: input.0,
             })
