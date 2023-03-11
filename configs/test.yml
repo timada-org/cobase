@@ -1,0 +1,5 @@
+pikav:
+  url: http://pikav.localhost:6751
+  namespace: cobase
+
+dsn: cockroach://cobase@127.0.0.1:26257/cobase?sslmode=disable
