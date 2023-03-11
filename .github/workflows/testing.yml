@@ -6,3 +6,4 @@ jobs:
     uses: timada-org/.github/.github/workflows/service-testing.yml@feat/service/setup-cockroach
     with:
       db_name: cobase
+
