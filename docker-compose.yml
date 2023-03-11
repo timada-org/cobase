@@ -7,6 +7,7 @@ services:
       sql --insecure --host="cockroach" --execute="
         CREATE DATABASE IF NOT EXISTS cobase;
         CREATE USER IF NOT EXISTS cobase; GRANT ALL ON DATABASE cobase TO cobase WITH GRANT OPTION;
+        ALTER USER cobase CREATEDB;
       "
     restart: on-failure
     networks:

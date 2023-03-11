@@ -8,11 +8,11 @@ use sqlx::{
 };
 
 #[derive(Deserialize)]
-pub struct Migrate {
+pub struct Reset {
     pub dsn: String,
 }
 
-impl Migrate {
+impl Reset {
     pub fn new(path: &str) -> Result<Self, ConfigError> {
         Config::builder()
             .add_source(File::with_name(path))
@@ -28,9 +28,11 @@ impl Migrate {
             .await
             .unwrap();
 
-        if !exists {
-            Any::create_database(&dsn).await.unwrap();
+        if exists {
+            Any::drop_database(&dsn).await.unwrap();
         }
+
+        Any::create_database(&dsn).await.unwrap();
 
         let pool = PgPool::connect(&self.dsn).await.unwrap();
 

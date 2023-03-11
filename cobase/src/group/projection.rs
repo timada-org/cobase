@@ -11,7 +11,7 @@ use super::{
     event::Created,
 };
 
-#[derive(Default, Serialize, Deserialize, Clone)]
+#[derive(Default, Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct Group {
     pub id: String,
     pub name: String,

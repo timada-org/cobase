@@ -1,7 +1,7 @@
 use actix_jwks::JwtPayload;
 use actix_web::{get, post, web, HttpResponse, Scope};
 use cobase::command::CommandInput;
-use cobase::group::{CreateCommand, Group, ListGroupsQuery};
+use cobase::group::{CreateCommand, ListGroupsQuery};
 use evento::{CommandError, CommandResponse};
 use uuid::Uuid;
 
@@ -52,8 +52,7 @@ async fn create_group(
             })
             .await,
     )
-    .to_response::<Group, _>(&state.publisher)
-    .await
+    .into()
 }
 
 pub fn scope() -> Scope {

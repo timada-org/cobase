@@ -17,11 +17,11 @@ dev:
 lint:
 	cargo clippy --all-features -- -D warnings
 
-migrate:
-	sqlx migrate run --source ./cmd/migrations
+reset:
+	cargo run reset -c configs/default.yml
 
-revert:
-	sqlx migrate revert --source ./cmd/migrations
+test: reset
+	cargo test
 
 prepare:
 	cargo sqlx prepare --merged

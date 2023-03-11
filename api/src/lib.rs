@@ -13,20 +13,13 @@ use actix_web::{
     App as ActixApp, HttpServer,
 };
 use cobase::{command::Command, query::Query};
-use evento::{PgEngine, Publisher};
+use evento::PgEngine;
 use serde::Deserialize;
 use sqlx::PgPool;
 use std::time::SystemTime;
 use tracing::{error, info};
 use utoipa::{openapi::Server, OpenApi};
 use utoipa_swagger_ui::SwaggerUi;
-
-pub struct AppState {
-    pub cmd: Addr<Command>,
-    pub query: Addr<Query>,
-    pub publisher: Publisher<evento::store::PgEngine>,
-    pub public_folder: String,
-}
 
 #[derive(Deserialize, Clone)]
 pub struct JwksOptions {
@@ -58,6 +51,12 @@ pub struct AppOptions {
     pub openapi: OpenApiOptions,
     pub swagger_ui: SwaggerUIOptions,
     pub public_folder: Option<String>,
+}
+
+pub struct AppState {
+    pub cmd: Addr<Command>,
+    pub query: Addr<Query>,
+    pub public_folder: String,
 }
 
 pub struct App {
@@ -100,18 +99,13 @@ impl App {
             }
         };
 
-        let store = PgEngine::new(pool.clone());
-        let query = Query::new(pool.clone()).start();
-        let cmd = Command::new(store.clone()).start();
-        let res = store
+        let evento = PgEngine::new(pool.clone())
             .name(format!("cobase.{}", self.options.zone))
-            .data(pool)
+            .data(pool.clone())
             .data(pikva_client.clone())
-            .subscribe(cobase::group::projection::groups())
-            .run()
-            .await;
+            .subscribe(cobase::group::projection::groups());
 
-        let publisher = match res {
+        let producer = match evento.run().await {
             Ok(p) => p,
             Err(e) => {
                 error!("{e}");
@@ -119,6 +113,9 @@ impl App {
                 std::process::exit(1)
             }
         };
+
+        let cmd = Command::new(evento, producer).start();
+        let query = Query::new(pool).start();
 
         let mut openapi = openapi::ApiDoc::openapi();
         openapi.servers = self.options.openapi.servers.clone();
@@ -137,7 +134,6 @@ impl App {
                 .app_data(web::Data::new(AppState {
                     cmd: cmd.clone(),
                     query: query.clone(),
-                    publisher: publisher.clone(),
                     public_folder: public_folder.to_owned(),
                 }))
                 .app_data(Data::new(jwks_client.clone()))
