@@ -4,3 +4,5 @@ on: pull_request
 jobs:
   service:
     uses: timada-org/.github/.github/workflows/service-testing.yml@feat/service/add-pikav-cockroach
+    with:
+      db_name: cobase
