@@ -3,7 +3,6 @@ on: pull_request
 
 jobs:
   service:
-    uses: timada-org/.github/.github/workflows/service-testing.yml@feat/service/setup-cockroach
+    uses: timada-org/.github/.github/workflows/service-testing.yml@v2.15.0
     with:
       db_name: cobase
-
