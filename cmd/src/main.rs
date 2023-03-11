@@ -111,7 +111,7 @@ async fn main() {
 ///
 /// The closure is passed `&ops.database_url` for easy composition.
 async fn retry_connect_errors<'a, F, Fut, T>(
-    database_url: &'a String,
+    database_url: &'a str,
     mut connect: F,
 ) -> sqlx::Result<T>
 where
@@ -125,17 +125,16 @@ where
             .with_max_elapsed_time(Some(Duration::from_secs(10)))
             .build(),
         || {
-            connect(&database_url).map_err(|e| -> backoff::Error<sqlx::Error> {
-                match e {
-                    sqlx::Error::Io(ref ioe) => match ioe.kind() {
+            connect(database_url).map_err(|e| -> backoff::Error<sqlx::Error> {
+                if let sqlx::Error::Io(ref ioe) = e {
+                    match ioe.kind() {
                         io::ErrorKind::ConnectionRefused
                         | io::ErrorKind::ConnectionReset
                         | io::ErrorKind::ConnectionAborted => {
                             return backoff::Error::transient(e);
                         }
                         _ => (),
-                    },
-                    _ => (),
+                    }
                 }
 
                 backoff::Error::permanent(e)
