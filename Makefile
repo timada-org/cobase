@@ -20,6 +20,9 @@ lint:
 reset:
 	cargo run reset -c configs/default.yml
 
+sqlx.reset:
+	sqlx database reset
+
 test: reset
 	cargo test
 

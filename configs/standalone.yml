@@ -19,3 +19,6 @@ openapi:
 
 swagger_ui:
   url: /api/cobase/openapi.json
+
+evento:
+  delay: 30

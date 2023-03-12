@@ -11,7 +11,8 @@
       "eslint --fix --no-color --max-warnings=0 --no-ignore"
     ],
     "**/*.rs": [
-      "cargo fmt -- --emit files"
+      "cargo fmt -- --emit files",
+      "cargo sqlx prepare --merged"
     ]
   },
   "keywords": [],

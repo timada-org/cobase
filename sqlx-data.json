@@ -1,6 +1,20 @@
 {
   "db": "PostgreSQL",
-  "44717960af68304e4b99dd1035562afe83e862dcea996832b2afdcca2dfec88e": {
+  "0124024970a8a975820a6c939eb93443e1ae60be5b3422c642310a1239359b00": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Varchar",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "INSERT INTO rooms (id, name, user_id) VALUES ($1, $2, $3)"
+  },
+  "c63a4959c72b0f059920852b4b55fa89e7ee2c754a72c89fcde5ac17dd3bae2a": {
     "describe": {
       "columns": [
         {
@@ -30,20 +44,6 @@
         ]
       }
     },
-    "query": "SELECT * FROM groups WHERE user_id = $1"
-  },
-  "4a9c28a6edf2ffa2576d584a407a82c0f120e46c4b316961c6c05726435e2b58": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Varchar",
-          "Varchar",
-          "Uuid"
-        ]
-      }
-    },
-    "query": "INSERT INTO groups (id, name, user_id) VALUES ($1, $2, $3)"
+    "query": "SELECT * FROM rooms WHERE user_id = $1"
   }
 }
