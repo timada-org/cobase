@@ -3,12 +3,12 @@ syntax = "proto3";
 package timada;
 
 service Cobase {
-    rpc CreateGroup(CreateGroupRequest) returns (CreateGroupReply) {}
+    rpc CreateRoom(CreateRoomRequest) returns (CreateRoomReply) {}
 }
 
-message CreateGroupRequest {
+message CreateRoomRequest {
 }
 
-message CreateGroupReply {
+message CreateRoomReply {
     bool success = 1;
 }

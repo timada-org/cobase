@@ -1,5 +1,5 @@
-mod group;
 mod openapi;
+mod room;
 
 use actix_files::NamedFile;
 pub use openapi::ApiDoc;
@@ -42,12 +42,18 @@ pub struct SwaggerUIOptions {
     pub url: String,
 }
 
+#[derive(Deserialize, Clone)]
+pub struct EventoOptions {
+    pub delay: u64,
+}
+
 pub struct AppOptions {
     pub zone: String,
     pub listen: String,
     pub jwks: JwksOptions,
     pub pikav: PikavOptions,
     pub dsn: String,
+    pub evento: EventoOptions,
     pub openapi: OpenApiOptions,
     pub swagger_ui: SwaggerUIOptions,
     pub public_folder: Option<String>,
@@ -103,9 +109,9 @@ impl App {
             .name(format!("cobase.{}", self.options.zone))
             .data(pool.clone())
             .data(pikva_client.clone())
-            .subscribe(cobase::group::projection::groups());
+            .subscribe(cobase::room::projection::rooms());
 
-        let producer = match evento.run().await {
+        let producer = match evento.run(self.options.evento.delay).await {
             Ok(p) => p,
             Err(e) => {
                 error!("{e}");
@@ -138,7 +144,7 @@ impl App {
                 }))
                 .app_data(Data::new(jwks_client.clone()))
                 .app_data(Data::new(openapi.clone()))
-                .service(web::scope("/api").service(group::scope()))
+                .service(web::scope("/api").service(room::scope()))
                 .service(openapi::service)
                 .service(
                     SwaggerUi::new("/swagger-ui/{_:.*}")

@@ -1,9 +1,9 @@
 use error::ClientError;
 use serde::Deserialize;
-use timada::{cobase_client::CobaseClient, CreateGroupReply};
+use timada::{cobase_client::CobaseClient, CreateRoomReply};
 use tonic::transport::Channel;
 
-pub use timada::CreateGroupRequest;
+pub use timada::CreateRoomRequest;
 pub use tonic::Status;
 
 mod error;
@@ -38,14 +38,14 @@ impl Client {
         Ok(Self { channel })
     }
 
-    pub async fn create_group(
+    pub async fn create_room(
         &self,
-        message: CreateGroupRequest,
-    ) -> Result<tonic::Response<CreateGroupReply>, Status> {
+        message: CreateRoomRequest,
+    ) -> Result<tonic::Response<CreateRoomReply>, Status> {
         let mut client = CobaseClient::new(self.channel.clone());
 
         let request = tonic::Request::new(message);
 
-        client.create_group(request).await
+        client.create_room(request).await
     }
 }

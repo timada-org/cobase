@@ -8,8 +8,8 @@ use uuid::Uuid;
 use crate::command::{Command, CommandInput, CommandMetadata};
 
 use super::{
-    event::{Created, GroupEvent},
-    Group,
+    event::{Created, RoomEvent},
+    Room,
 };
 
 #[derive(Deserialize, IntoParams, ToSchema)]
@@ -33,9 +33,9 @@ impl Handler<CommandInput<CreateCommand>> for Command {
             let request_id = Uuid::new_v4();
 
             producer
-                .publish::<Group, _>(
+                .publish::<Room, _>(
                     &id,
-                    vec![Event::new(GroupEvent::Created)
+                    vec![Event::new(RoomEvent::Created)
                         .data(Created {
                             name: msg.input.name,
                         })?

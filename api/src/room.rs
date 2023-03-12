@@ -1,7 +1,7 @@
 use actix_jwks::JwtPayload;
 use actix_web::{get, post, web, HttpResponse, Scope};
 use cobase::command::CommandInput;
-use cobase::group::{CreateCommand, ListGroupsQuery};
+use cobase::room::{CreateCommand, ListRoomsQuery};
 use evento::{CommandError, CommandResponse};
 use uuid::Uuid;
 
@@ -9,36 +9,36 @@ use crate::AppState;
 
 #[utoipa::path(
     tag = "cobase",
-    context_path = "/api/groups",
+    context_path = "/api/rooms",
     responses(
-        (status = 200, description = "Get groups did not result error", body = [Group]),
+        (status = 200, description = "Get rooms did not result error", body = [Room]),
     )
 )]
 #[get("")]
-async fn list_groups(
+async fn list_rooms(
     state: web::Data<AppState>,
     payload: JwtPayload,
 ) -> Result<HttpResponse, CommandError> {
-    let groups = state
+    let rooms = state
         .query
-        .send(ListGroupsQuery {
+        .send(ListRoomsQuery {
             user_id: Uuid::parse_str(&payload.subject)?,
         })
         .await??;
 
-    Ok(HttpResponse::Ok().json(groups))
+    Ok(HttpResponse::Ok().json(rooms))
 }
 
 #[utoipa::path(
     tag = "cobase",
-    context_path = "/api/groups",
+    context_path = "/api/rooms",
     request_body=CreateCommand,
     responses(
-        (status = 200, description = "Create group did not result error", body = CommandJsonResponse),
+        (status = 200, description = "Create room did not result error", body = CommandJsonResponse),
     )
 )]
 #[post("/create")]
-async fn create_group(
+async fn create_room(
     state: web::Data<AppState>,
     input: web::Json<CreateCommand>,
     payload: JwtPayload,
@@ -56,7 +56,7 @@ async fn create_group(
 }
 
 pub fn scope() -> Scope {
-    web::scope("/groups")
-        .service(list_groups)
-        .service(create_group)
+    web::scope("/rooms")
+        .service(list_rooms)
+        .service(create_room)
 }

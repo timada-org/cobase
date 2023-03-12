@@ -1,6 +1,6 @@
 pub mod command;
-pub mod group;
 pub mod query;
+pub mod room;
 
 #[cfg(test)]
 mod tests {
@@ -9,7 +9,7 @@ mod tests {
     use evento::{Context, PgEngine};
     use serde::Deserialize;
     use sqlx::PgPool;
-    use std::{path::PathBuf, time::Duration};
+    use std::path::PathBuf;
 
     use crate::{command::Command, query::Query};
 
@@ -57,8 +57,8 @@ mod tests {
             .name(format!("cobase.test.{test_name}"))
             .data(pool.clone())
             .data(pikav_client.clone())
-            .subscribe(crate::group::projection::groups());
-        let producer = evento.run_with_delay(Duration::from_secs(0)).await.unwrap();
+            .subscribe(crate::room::projection::rooms());
+        let producer = evento.run(0).await.unwrap();
         let command = Command::new(evento.clone(), producer).start();
         let query = Query::new(pool.clone()).start();
 

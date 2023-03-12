@@ -1,5 +1,5 @@
 use timada_cobase_client::timada::{
-    cobase_server::CobaseServer, CreateGroupReply, CreateGroupRequest,
+    cobase_server::CobaseServer, CreateRoomReply, CreateRoomRequest,
 };
 use tonic::{transport::Server, Request, Response, Status};
 use tracing::info;
@@ -9,11 +9,11 @@ pub struct Cobase {}
 
 #[tonic::async_trait]
 impl timada_cobase_client::timada::cobase_server::Cobase for Cobase {
-    async fn create_group(
+    async fn create_room(
         &self,
-        _request: Request<CreateGroupRequest>,
-    ) -> Result<Response<CreateGroupReply>, Status> {
-        Ok(Response::new(CreateGroupReply { success: true }))
+        _request: Request<CreateRoomRequest>,
+    ) -> Result<Response<CreateRoomReply>, Status> {
+        Ok(Response::new(CreateRoomReply { success: true }))
     }
 }
 

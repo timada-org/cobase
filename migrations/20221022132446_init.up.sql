@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS _evento_subscriptions
 
 CREATE UNIQUE INDEX ON _evento_subscriptions (key);
 
-CREATE TABLE IF NOT EXISTS groups
+CREATE TABLE IF NOT EXISTS rooms
 (
     id VARCHAR(21) NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,

@@ -3,12 +3,12 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Display, FromStr)]
 #[display(style = "kebab-case")]
-pub enum GroupEvent {
+pub enum RoomEvent {
     Created,
 }
 
-impl From<GroupEvent> for String {
-    fn from(o: GroupEvent) -> Self {
+impl From<RoomEvent> for String {
+    fn from(o: RoomEvent) -> Self {
         o.to_string()
     }
 }

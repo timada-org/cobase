@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::{command::CommandMetadata, group::event::GroupEvent};
+use crate::{command::CommandMetadata, room::event::RoomEvent};
 
 use super::{
     aggregate::{self},
@@ -12,47 +12,47 @@ use super::{
 };
 
 #[derive(Default, Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct Group {
+pub struct Room {
     pub id: String,
     pub name: String,
     pub user_id: Uuid,
 }
 
-pub fn groups() -> Subscriber {
-    Subscriber::new("groups")
-        .filter("group/#")
+pub fn rooms() -> Subscriber {
+    Subscriber::new("rooms")
+        .filter("room/#")
         .handler(|event, ctx| {
             let db = ctx.0.read().extract::<PgPool>().clone();
             let pikav = ctx.0.read().extract::<pikav_client::Client>().clone();
 
             async move {
-                let group_event: GroupEvent = event.name.parse()?;
+                let room_event: RoomEvent = event.name.parse()?;
                 let metadata = event.to_metadata::<CommandMetadata>()?;
 
-                match group_event {
-                    GroupEvent::Created => {
+                match room_event {
+                    RoomEvent::Created => {
                         let data: Created = event.to_data()?;
 
-                        let group = Group {
-                            id: aggregate::Group::to_id(event.aggregate_id),
+                        let room = Room {
+                            id: aggregate::Room::to_id(event.aggregate_id),
                             name: data.name,
                             user_id: Uuid::parse_str(&metadata.user_id)?,
                         };
 
                         sqlx::query!(
-                            "INSERT INTO groups (id, name, user_id) VALUES ($1, $2, $3)",
-                            &group.id,
-                            &group.name,
-                            &group.user_id
+                            "INSERT INTO rooms (id, name, user_id) VALUES ($1, $2, $3)",
+                            &room.id,
+                            &room.name,
+                            &room.user_id
                         )
                         .execute(&db)
                         .await?;
 
                         pikav.publish(vec![pikav_client::Event {
                             user_id: metadata.user_id,
-                            topic: format!("groups/{}", group.id),
+                            topic: format!("rooms/{}", room.id),
                             name: "created".to_owned(),
-                            data: Some(serde_json::to_value(group).unwrap().into()),
+                            data: Some(serde_json::to_value(room).unwrap().into()),
                             metadata: None,
                         }]);
                     }

@@ -1,6 +1,8 @@
 use std::str::FromStr;
 
-use cobase_api::{App, AppOptions, JwksOptions, OpenApiOptions, PikavOptions, SwaggerUIOptions};
+use cobase_api::{
+    App, AppOptions, EventoOptions, JwksOptions, OpenApiOptions, PikavOptions, SwaggerUIOptions,
+};
 use cobase_cluster::{Cluster, ClusterOptions};
 use config::{Config, ConfigError, Environment, File};
 use serde::Deserialize;
@@ -24,6 +26,7 @@ pub struct Serve {
     pub dsn: String,
     pub openapi: OpenApiOptions,
     pub swagger_ui: SwaggerUIOptions,
+    pub evento: EventoOptions,
     pub log: Option<String>,
     pub public_folder: Option<String>,
 }
@@ -67,6 +70,7 @@ impl Serve {
             pikav: self.pikav.clone(),
             openapi: self.openapi.clone(),
             swagger_ui: self.swagger_ui.clone(),
+            evento: self.evento.clone(),
             public_folder: self.public_folder.clone(),
         });
 
