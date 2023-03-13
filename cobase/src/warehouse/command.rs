@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use actix::{ActorFutureExt, Context, Handler, ResponseActFuture, WrapFuture};
 use evento::{CommandResult, Event};
 use nanoid::nanoid;
@@ -15,7 +17,7 @@ use super::{
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ImportDataCommand {
-    pub data: Vec<Value>,
+    pub data: Vec<HashMap<String, Value>>,
 }
 
 impl Handler<CommandInput<ImportDataCommand>> for Command {

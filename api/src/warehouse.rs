@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use actix_jwks::JwtPayload;
 use actix_web::{post, web, HttpResponse, Scope};
 use cobase::command::CommandInput;
@@ -13,7 +15,7 @@ use crate::AppState;
 #[serde(rename_all = "camelCase")]
 pub struct ImportDataInput {
     #[schema(value_type = Vec<Object>)]
-    pub data: Vec<Value>,
+    pub data: Vec<HashMap<String, Value>>,
 }
 
 #[utoipa::path(
