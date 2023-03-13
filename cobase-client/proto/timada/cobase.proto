@@ -4,11 +4,19 @@ package timada;
 
 service Cobase {
     rpc CreateRoom(CreateRoomRequest) returns (CreateRoomReply) {}
+    rpc ImportData(ImportDataWarehouseRequest) returns (ImportDataWarehouseReply) {}
 }
 
 message CreateRoomRequest {
 }
 
 message CreateRoomReply {
+    bool success = 1;
+}
+
+message ImportDataWarehouseRequest {
+}
+
+message ImportDataWarehouseReply {
     bool success = 1;
 }

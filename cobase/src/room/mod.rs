@@ -5,8 +5,8 @@ mod query;
 
 pub mod projection;
 
-pub use aggregate::Room;
 pub use command::*;
+pub use projection::Room;
 pub use query::*;
 
 #[cfg(test)]

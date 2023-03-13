@@ -1,6 +1,7 @@
 pub mod command;
 pub mod query;
 pub mod room;
+pub mod warehouse;
 
 #[cfg(test)]
 mod tests {

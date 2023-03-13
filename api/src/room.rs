@@ -1,11 +1,23 @@
 use actix_jwks::JwtPayload;
 use actix_web::{get, post, web, HttpResponse, Scope};
 use cobase::command::CommandInput;
-use cobase::room::{CreateCommand, ListRoomsQuery};
+use cobase::room;
 use evento::{CommandError, CommandResponse};
+use serde::{Deserialize, Serialize};
+use utoipa::{IntoParams, ToSchema};
 use uuid::Uuid;
 
 use crate::AppState;
+
+#[derive(Default, Serialize, Deserialize, Clone, Debug, PartialEq, ToSchema)]
+pub struct Room {
+    #[schema(example = "V1StGXR8_Z5jdHi6B-myT")]
+    pub id: String,
+    #[schema(example = "My room name 1")]
+    pub name: String,
+    #[schema(example = "a18aac51-6262-4576-8883-7fda0ca72aac")]
+    pub user_id: Uuid,
+}
 
 #[utoipa::path(
     tag = "cobase",
@@ -21,7 +33,7 @@ async fn list_rooms(
 ) -> Result<HttpResponse, CommandError> {
     let rooms = state
         .query
-        .send(ListRoomsQuery {
+        .send(room::ListRoomsQuery {
             user_id: Uuid::parse_str(&payload.subject)?,
         })
         .await??;
@@ -29,18 +41,25 @@ async fn list_rooms(
     Ok(HttpResponse::Ok().json(rooms))
 }
 
+#[derive(Deserialize, IntoParams, ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct CreateInput {
+    #[schema(example = "My room name 1")]
+    pub name: String,
+}
+
 #[utoipa::path(
     tag = "cobase",
     context_path = "/api/rooms",
-    request_body=CreateCommand,
+    request_body=CreateInput,
     responses(
-        (status = 200, description = "Create room did not result error", body = CommandJsonResponse),
+        (status = 200, description = "Create room did not result error", body = CommandResponse),
     )
 )]
 #[post("/create")]
 async fn create_room(
     state: web::Data<AppState>,
-    input: web::Json<CreateCommand>,
+    input: web::Json<CreateInput>,
     payload: JwtPayload,
 ) -> HttpResponse {
     CommandResponse(
@@ -48,7 +67,7 @@ async fn create_room(
             .cmd
             .send(CommandInput {
                 user_id: payload.subject,
-                input: input.0,
+                input: room::CreateCommand { name: input.0.name },
             })
             .await,
     )

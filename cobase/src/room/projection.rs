@@ -36,7 +36,7 @@ pub fn rooms() -> Subscriber {
                         let room = Room {
                             id: aggregate::Room::to_id(event.aggregate_id),
                             name: data.name,
-                            user_id: Uuid::parse_str(&metadata.user_id)?,
+                            user_id: Uuid::parse_str(&metadata.request_by)?,
                         };
 
                         sqlx::query!(
@@ -49,7 +49,7 @@ pub fn rooms() -> Subscriber {
                         .await?;
 
                         pikav.publish(vec![pikav_client::Event {
-                            user_id: metadata.user_id,
+                            user_id: metadata.request_by,
                             topic: format!("rooms/{}", room.id),
                             name: "created".to_owned(),
                             data: Some(serde_json::to_value(room).unwrap().into()),

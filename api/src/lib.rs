@@ -1,5 +1,6 @@
 mod openapi;
 mod room;
+mod warehouse;
 
 use actix_files::NamedFile;
 pub use openapi::ApiDoc;
@@ -144,7 +145,11 @@ impl App {
                 }))
                 .app_data(Data::new(jwks_client.clone()))
                 .app_data(Data::new(openapi.clone()))
-                .service(web::scope("/api").service(room::scope()))
+                .service(
+                    web::scope("/api")
+                        .service(room::scope())
+                        .service(warehouse::scope()),
+                )
                 .service(openapi::service)
                 .service(
                     SwaggerUi::new("/swagger-ui/{_:.*}")

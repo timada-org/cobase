@@ -1,14 +1,13 @@
 use actix::{ActorFutureExt, Context, Handler, Message, ResponseActFuture, WrapFuture};
 use evento::CommandError;
 use serde::Deserialize;
-use utoipa::{IntoParams, ToSchema};
 use uuid::Uuid;
 
 use crate::query::Query;
 
 use super::projection::Room;
 
-#[derive(Message, Deserialize, IntoParams, ToSchema)]
+#[derive(Message, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[rtype(result = "Result<Vec<Room>, CommandError>")]
 pub struct ListRoomsQuery {
