@@ -28,30 +28,39 @@ impl Handler<CommandInput<ImportDataCommand>> for Command {
         msg: CommandInput<ImportDataCommand>,
         _ctx: &mut Context<Self>,
     ) -> Self::Result {
-        todo!()
-        // let producer = self.producer.clone();
+        let evento = self.evento.clone();
+        let producer = self.producer.clone();
 
-        // async move {
-        //     let request_id = Uuid::new_v4();
+        async move {
+            let version = evento
+                .load::<Warehouse, _>(&msg.user_id)
+                .await?
+                .map(|(_, e)| e.version)
+                .unwrap_or(0);
+            let request_id = Uuid::new_v4();
 
-        //     producer
-        //         .publish::<Warehouse, _>(
-        //             &id,
-        //             vec![Event::new(WarehouseEvent::ContactsImported)
-        //                 .data(ContactsImported {
-        //                     storage_path: ,
-        //                 })?
-        //                 .metadata(CommandMetadata {
-        //                     request_by: msg.user_id,
-        //                     request_id: request_id.to_string(),
-        //                 })?],
-        //             0,
-        //         )
-        //         .await?;
+            // add import data to storage
 
-        //     Ok(id)
-        // }
-        // .into_actor(self)
-        // .boxed_local()
+            producer
+                .publish::<Warehouse, _>(
+                    &msg.user_id,
+                    vec![Event::new(WarehouseEvent::DataImported)
+                        .data(DataImported {
+                            storage_path: format!("import-data/{}_{version}.tid", &msg.user_id),
+                        })?
+                        .metadata(CommandMetadata {
+                            request_by: msg.user_id.to_owned(),
+                            request_id: request_id.to_string(),
+                        })?],
+                    version,
+                )
+                .await?;
+
+            // remove import data from storage if error
+
+            Ok(msg.user_id)
+        }
+        .into_actor(self)
+        .boxed_local()
     }
 }

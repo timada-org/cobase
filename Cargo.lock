@@ -901,9 +901,9 @@ checksum = "0206175f82b8d6bf6652ff7d71a1e27fd2e4efde587fd368662814d6ec1d9ce0"
 
 [[package]]
 name = "evento"
-version = "0.4.7"
+version = "0.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9875a84e062b7262160911b24d725db2d1f30f3b1b0de67eb53fb8076102c4c"
+checksum = "ef51bfc2902081ab41863ca2c79763e6ae8603c715ae350ce73bdd839fdd8848"
 dependencies = [
  "actix",
  "actix-web",

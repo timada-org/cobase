@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use super::event::{DataImported, WarehouseEvent};
 
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize, PartialEq, Debug)]
 pub struct Warehouse {
     pub storage_paths: Vec<String>,
 }
