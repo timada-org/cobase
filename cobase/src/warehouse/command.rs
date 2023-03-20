@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 use actix::{ActorFutureExt, Context, Handler, ResponseActFuture, WrapFuture};
 use evento::{CommandResult, Event};
-use nanoid::nanoid;
 use serde::Deserialize;
 use serde_json::Value;
 use uuid::Uuid;
