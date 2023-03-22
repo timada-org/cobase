@@ -105,14 +105,9 @@ mod tests {
             .unwrap();
 
         assert_eq!(
-            warehouse,
-            Warehouse {
-                storage_paths: vec![get_import_data_path(&user_1.to_string(), 0)]
-            }
-        );
-
-        assert_eq!(
-            read_import_data(&op, &user_1.to_string(), 0).await.unwrap(),
+            read_import_data(&op, &warehouse.storage_paths[0])
+                .await
+                .unwrap(),
             data_0
         );
 
@@ -150,22 +145,16 @@ mod tests {
             .unwrap();
 
         assert_eq!(
-            warehouse,
-            Warehouse {
-                storage_paths: vec![
-                    get_import_data_path(&user_1.to_string(), 0),
-                    get_import_data_path(&user_1.to_string(), 1),
-                ]
-            }
-        );
-
-        assert_eq!(
-            read_import_data(&op, &user_1.to_string(), 0).await.unwrap(),
+            read_import_data(&op, &warehouse.storage_paths[0])
+                .await
+                .unwrap(),
             data_0
         );
 
         assert_eq!(
-            read_import_data(&op, &user_1.to_string(), 1).await.unwrap(),
+            read_import_data(&op, &warehouse.storage_paths[1])
+                .await
+                .unwrap(),
             data_1
         );
 
@@ -203,14 +192,9 @@ mod tests {
             .unwrap();
 
         assert_eq!(
-            warehouse,
-            Warehouse {
-                storage_paths: vec![get_import_data_path(&user_2.to_string(), 0)]
-            }
-        );
-
-        assert_eq!(
-            read_import_data(&op, &user_2.to_string(), 0).await.unwrap(),
+            read_import_data(&op, &warehouse.storage_paths[0])
+                .await
+                .unwrap(),
             data_0
         );
     }

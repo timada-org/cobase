@@ -29,4 +29,4 @@ evento:
 
 storage:
   fs:
-    root: /tmp
+    root: /tmp/cobase

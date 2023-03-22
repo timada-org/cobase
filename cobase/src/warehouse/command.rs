@@ -46,7 +46,7 @@ impl Handler<CommandInput<ImportDataCommand>> for Command {
                 .map(|(_, e)| e.version)
                 .unwrap_or(0);
 
-            let storage_path = get_import_data_path(&msg.user_id, version);
+            let storage_path = get_import_data_path();
             let import_data_exists = storage
                 .is_exist(&storage_path)
                 .await
@@ -58,7 +58,7 @@ impl Handler<CommandInput<ImportDataCommand>> for Command {
                 ));
             }
 
-            write_import_data(&storage, &msg.user_id, version, msg.input.data)
+            write_import_data(&storage, &storage_path, msg.input.data)
                 .await
                 .map_err(|e| CommandError::InternalServerErr(e.to_string()))?;
 
