@@ -1,6 +1,7 @@
 use actix::{Actor, Context, Message};
 use actix_jwks::JwtPayload;
 use evento::{CommandResult, PgEvento, PgProducer};
+use opendal::Operator;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -12,11 +13,16 @@ pub struct CommandMetadata {
 pub struct Command {
     pub evento: PgEvento,
     pub producer: PgProducer,
+    pub storage: Operator,
 }
 
 impl Command {
-    pub fn new(evento: PgEvento, producer: PgProducer) -> Self {
-        Self { evento, producer }
+    pub fn new(evento: PgEvento, producer: PgProducer, storage: Operator) -> Self {
+        Self {
+            evento,
+            producer,
+            storage,
+        }
     }
 }
 

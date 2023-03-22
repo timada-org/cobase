@@ -1,6 +1,7 @@
 mod aggregate;
 mod command;
 mod event;
+mod service;
 
 pub use command::*;
 
@@ -8,12 +9,14 @@ pub use command::*;
 mod tests {
     use actix::Addr;
     use evento::{CommandError, PgEvento};
+    use opendal::Operator;
     use serde_json::json;
     use uuid::Uuid;
 
     use crate::{command::Command, tests::create_context, warehouse::ImportDataCommand};
 
     use super::aggregate::Warehouse;
+    use super::service::{get_import_data_path, read_import_data};
 
     #[actix::test]
     async fn fail_missing_id_import_data_to_warehouse() {
@@ -55,7 +58,7 @@ mod tests {
 
         assert_eq!(
             err,
-            CommandError::BadRequest("missing field id at index 1".to_owned())
+            CommandError::BadRequest("Missing field id at index 1".to_owned())
         );
     }
 
@@ -64,28 +67,31 @@ mod tests {
         let ctx = create_context("success_import_data_to_warehouse").await;
         let cmd = ctx.extract::<Addr<Command>>();
         let evento = ctx.extract::<PgEvento>();
+        let op = ctx.extract::<Operator>();
         let user_1 = Uuid::new_v4();
         let user_2 = Uuid::new_v4();
+
+        let data_0 = vec![
+            serde_json::from_value(json!({
+                "id": 1,
+                "email": "john.doe@timada.co",
+                "first_name": "john",
+                "last_name": "doe"
+            }))
+            .unwrap(),
+            serde_json::from_value(json!({
+                "id": 2,
+                "email": "albert.dupont@timada.co",
+                "first_name": "albert",
+                "last_name": "not my last name"
+            }))
+            .unwrap(),
+        ];
 
         cmd.send(crate::command::CommandInput {
             user_id: user_1.to_string(),
             input: ImportDataCommand {
-                data: vec![
-                    serde_json::from_value(json!({
-                        "id": 1,
-                        "email": "john.doe@timada.co",
-                        "first_name": "john",
-                        "last_name": "doe"
-                    }))
-                    .unwrap(),
-                    serde_json::from_value(json!({
-                        "id": 2,
-                        "email": "albert.dupont@timada.co",
-                        "first_name": "albert",
-                        "last_name": "not my last name"
-                    }))
-                    .unwrap(),
-                ],
+                data: data_0.clone(),
             },
         })
         .await
@@ -101,31 +107,36 @@ mod tests {
         assert_eq!(
             warehouse,
             Warehouse {
-                storage_paths: vec![format!("import-data/{}_0.tid", user_1.to_string())]
+                storage_paths: vec![get_import_data_path(&user_1.to_string(), 0)]
             }
         );
 
-        // TODO: check if exist in storage
+        assert_eq!(
+            read_import_data(&op, &user_1.to_string(), 0).await.unwrap(),
+            data_0
+        );
+
+        let data_1 = vec![
+            serde_json::from_value(json!({
+                "id": 2,
+                "email": "albert.dupont@timada.co",
+                "first_name": "albert",
+                "last_name": "dupont"
+            }))
+            .unwrap(),
+            serde_json::from_value(json!({
+                "id": 3,
+                "email": "lennie.rice@timada.co",
+                "first_name": "lennie",
+                "last_name": "rice"
+            }))
+            .unwrap(),
+        ];
 
         cmd.send(crate::command::CommandInput {
             user_id: user_1.to_string(),
             input: ImportDataCommand {
-                data: vec![
-                    serde_json::from_value(json!({
-                        "id": 2,
-                        "email": "albert.dupont@timada.co",
-                        "first_name": "albert",
-                        "last_name": "dupont"
-                    }))
-                    .unwrap(),
-                    serde_json::from_value(json!({
-                        "id": 3,
-                        "email": "lennie.rice@timada.co",
-                        "first_name": "lennie",
-                        "last_name": "rice"
-                    }))
-                    .unwrap(),
-                ],
+                data: data_1.clone(),
             },
         })
         .await
@@ -142,33 +153,43 @@ mod tests {
             warehouse,
             Warehouse {
                 storage_paths: vec![
-                    format!("import-data/{}_0.tid", user_1.to_string()),
-                    format!("import-data/{}_1.tid", user_1.to_string())
+                    get_import_data_path(&user_1.to_string(), 0),
+                    get_import_data_path(&user_1.to_string(), 1),
                 ]
             }
         );
 
-        // TODO: check if exist in storage
+        assert_eq!(
+            read_import_data(&op, &user_1.to_string(), 0).await.unwrap(),
+            data_0
+        );
+
+        assert_eq!(
+            read_import_data(&op, &user_1.to_string(), 1).await.unwrap(),
+            data_1
+        );
+
+        let data_0 = vec![
+            serde_json::from_value(json!({
+                "id": 1,
+                "email": "john.doe@gmail.com",
+                "first_name": "john",
+                "last_name": "doe"
+            }))
+            .unwrap(),
+            serde_json::from_value(json!({
+                "id": 2,
+                "email": "albert.dupont@gmail.com",
+                "first_name": "albert",
+                "last_name": "dupont"
+            }))
+            .unwrap(),
+        ];
 
         cmd.send(crate::command::CommandInput {
             user_id: user_2.to_string(),
             input: ImportDataCommand {
-                data: vec![
-                    serde_json::from_value(json!({
-                        "id": 1,
-                        "email": "john.doe@gmail.com",
-                        "first_name": "john",
-                        "last_name": "doe"
-                    }))
-                    .unwrap(),
-                    serde_json::from_value(json!({
-                        "id": 2,
-                        "email": "albert.dupont@gmail.com",
-                        "first_name": "albert",
-                        "last_name": "dupont"
-                    }))
-                    .unwrap(),
-                ],
+                data: data_0.clone(),
             },
         })
         .await
@@ -184,10 +205,13 @@ mod tests {
         assert_eq!(
             warehouse,
             Warehouse {
-                storage_paths: vec![format!("import-data/{}_0.tid", user_2.to_string())]
+                storage_paths: vec![get_import_data_path(&user_2.to_string(), 0)]
             }
         );
 
-        // TODO: check if exist in storage
+        assert_eq!(
+            read_import_data(&op, &user_2.to_string(), 0).await.unwrap(),
+            data_0
+        );
     }
 }

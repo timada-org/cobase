@@ -2,10 +2,8 @@ mod openapi;
 mod room;
 mod warehouse;
 
-use actix_files::NamedFile;
-pub use openapi::ApiDoc;
-
 use actix::{Actor, Addr};
+use actix_files::NamedFile;
 use actix_jwks::JwksClient;
 use actix_web::{
     dev::{fn_service, ServiceRequest, ServiceResponse},
@@ -13,7 +11,7 @@ use actix_web::{
     web::{self, Data},
     App as ActixApp, HttpServer,
 };
-use cobase::{command::Command, query::Query};
+use cobase::{command::Command, query::Query, storage::Storage};
 use evento::PgEngine;
 use serde::Deserialize;
 use sqlx::PgPool;
@@ -21,6 +19,8 @@ use std::time::SystemTime;
 use tracing::{error, info};
 use utoipa::{openapi::Server, OpenApi};
 use utoipa_swagger_ui::SwaggerUi;
+
+pub use openapi::ApiDoc;
 
 #[derive(Deserialize, Clone)]
 pub struct JwksOptions {
@@ -57,6 +57,7 @@ pub struct AppOptions {
     pub evento: EventoOptions,
     pub openapi: OpenApiOptions,
     pub swagger_ui: SwaggerUIOptions,
+    pub storage: Storage,
     pub public_folder: Option<String>,
 }
 
@@ -106,10 +107,20 @@ impl App {
             }
         };
 
+        let storage = match self.options.storage.build() {
+            Ok(p) => p,
+            Err(e) => {
+                error!("{e}");
+
+                std::process::exit(1)
+            }
+        };
+
         let evento = PgEngine::new(pool.clone())
             .name(format!("cobase.{}", self.options.zone))
             .data(pool.clone())
             .data(pikva_client.clone())
+            .data(storage.clone())
             .subscribe(cobase::room::projection::rooms());
 
         let producer = match evento.run(self.options.evento.delay).await {
@@ -121,7 +132,7 @@ impl App {
             }
         };
 
-        let cmd = Command::new(evento, producer).start();
+        let cmd = Command::new(evento, producer, storage).start();
         let query = Query::new(pool).start();
 
         let mut openapi = openapi::ApiDoc::openapi();

@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+use cobase::storage::Storage;
 use cobase_api::{
     App, AppOptions, EventoOptions, JwksOptions, OpenApiOptions, PikavOptions, SwaggerUIOptions,
 };
@@ -29,6 +30,7 @@ pub struct Serve {
     pub evento: EventoOptions,
     pub log: Option<String>,
     pub public_folder: Option<String>,
+    pub storage: Storage,
 }
 
 impl Serve {
@@ -72,6 +74,7 @@ impl Serve {
             swagger_ui: self.swagger_ui.clone(),
             evento: self.evento.clone(),
             public_folder: self.public_folder.clone(),
+            storage: self.storage.clone(),
         });
 
         actix_rt::spawn(async move { cluster.serve().await });
