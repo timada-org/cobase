@@ -33,9 +33,9 @@ impl Handler<CommandInput<ImportDataCommand>> for Command {
         let storage = self.storage.clone();
 
         async move {
-            if let Some(pos) = msg.input.data.iter().position(|o| !o.contains_key("id")) {
+            if let Some(pos) = msg.input.data.iter().position(|o| !o.contains_key("_id")) {
                 return Err(CommandError::BadRequest(format!(
-                    "Missing field id at index {pos}"
+                    "Missing field _id at index {pos}"
                 )));
             }
 

@@ -16,7 +16,7 @@ mod tests {
     use crate::{command::Command, tests::create_context, warehouse::ImportDataCommand};
 
     use super::aggregate::Warehouse;
-    use super::service::{get_import_data_path, read_import_data};
+    use super::service::read_import_data;
 
     #[actix::test]
     async fn fail_missing_id_import_data_to_warehouse() {
@@ -30,7 +30,7 @@ mod tests {
                 input: ImportDataCommand {
                     data: vec![
                         serde_json::from_value(json!({
-                            "id": 1,
+                            "_id": 1,
                             "email": "john.doe@timada.co",
                             "first_name": "john",
                             "last_name": "doe"
@@ -43,7 +43,7 @@ mod tests {
                         }))
                         .unwrap(),
                         serde_json::from_value(json!({
-                            "id": 3,
+                            "_id": 3,
                             "email": "lennie.rice@timada.co",
                             "first_name": "lennie",
                             "last_name": "rice"
@@ -58,7 +58,7 @@ mod tests {
 
         assert_eq!(
             err,
-            CommandError::BadRequest("Missing field id at index 1".to_owned())
+            CommandError::BadRequest("Missing field _id at index 1".to_owned())
         );
     }
 
@@ -73,14 +73,14 @@ mod tests {
 
         let data_0 = vec![
             serde_json::from_value(json!({
-                "id": 1,
+                "_id": 1,
                 "email": "john.doe@timada.co",
                 "first_name": "john",
                 "last_name": "doe"
             }))
             .unwrap(),
             serde_json::from_value(json!({
-                "id": 2,
+                "_id": 2,
                 "email": "albert.dupont@timada.co",
                 "first_name": "albert",
                 "last_name": "not my last name"
@@ -113,14 +113,14 @@ mod tests {
 
         let data_1 = vec![
             serde_json::from_value(json!({
-                "id": 2,
+                "_id": 2,
                 "email": "albert.dupont@timada.co",
                 "first_name": "albert",
                 "last_name": "dupont"
             }))
             .unwrap(),
             serde_json::from_value(json!({
-                "id": 3,
+                "_id": 3,
                 "email": "lennie.rice@timada.co",
                 "first_name": "lennie",
                 "last_name": "rice"
@@ -160,14 +160,14 @@ mod tests {
 
         let data_0 = vec![
             serde_json::from_value(json!({
-                "id": 1,
+                "_id": 1,
                 "email": "john.doe@gmail.com",
                 "first_name": "john",
                 "last_name": "doe"
             }))
             .unwrap(),
             serde_json::from_value(json!({
-                "id": 2,
+                "_id": 2,
                 "email": "albert.dupont@gmail.com",
                 "first_name": "albert",
                 "last_name": "dupont"
