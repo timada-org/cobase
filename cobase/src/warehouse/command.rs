@@ -34,11 +34,7 @@ impl Handler<CommandInput<ImportDataCommand>> for Command {
 
         async move {
             let error_pos = msg.input.data.iter().position(|o| match o.get("_id") {
-                Some(id) => match id {
-                    Value::Number(_) => false,
-                    Value::String(_) => false,
-                    _ => true,
-                },
+                Some(id) => !matches!(id, Value::Number(_) | Value::String(_)),
                 _ => true,
             });
             if let Some(pos) = error_pos {
