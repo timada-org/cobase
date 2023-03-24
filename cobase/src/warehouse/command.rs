@@ -37,6 +37,7 @@ impl Handler<CommandInput<ImportDataCommand>> for Command {
                 Some(id) => !matches!(id, Value::Number(_) | Value::String(_)),
                 _ => true,
             });
+
             if let Some(pos) = error_pos {
                 return Err(CommandError::BadRequest(format!(
                     "Missing field _id or not (string | number) at index {pos}"
