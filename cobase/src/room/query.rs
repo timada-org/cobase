@@ -22,7 +22,7 @@ impl Handler<ListRoomsQuery> for Query {
 
         async move {
             let rooms = sqlx::query_as::<_, Room>("SELECT * FROM rooms WHERE user_id = $1")
-                .bind(&msg.user_id)
+                .bind(msg.user_id)
                 .fetch_all(&pool)
                 .await?;
 

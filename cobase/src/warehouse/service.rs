@@ -11,15 +11,15 @@ pub fn get_import_data_path() -> String {
 }
 
 pub async fn read_import_data(op: &Operator, path: &str) -> Result<Vec<HashMap<String, Value>>> {
-    let content = op.read(&path).await?;
+    let content = op.read(path).await?;
     let packed = serde_json::from_slice(&content)
         .map_err(|e| Error::new(opendal::ErrorKind::Unexpected, &e.to_string()))?;
 
     let mut unpacker = Unpacker::new();
 
-    Ok(unpacker
+    unpacker
         .unpack(&packed)
-        .map_err(|e| Error::new(opendal::ErrorKind::Unexpected, &e.to_string()))?)
+        .map_err(|e| Error::new(opendal::ErrorKind::Unexpected, &e.to_string()))
 }
 
 pub async fn write_import_data(
@@ -36,5 +36,5 @@ pub async fn write_import_data(
     let content = serde_json::to_string(&packed)
         .map_err(|e| Error::new(opendal::ErrorKind::Unexpected, &e.to_string()))?;
 
-    op.write(&path, content).await
+    op.write(path, content).await
 }

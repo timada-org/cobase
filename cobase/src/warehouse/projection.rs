@@ -59,7 +59,7 @@ pub fn warehouse_datas() -> Subscriber {
                         let warehouse_id = match warehouse_id {
                             Some((id,)) => id,
                             _ => {
-                                let id = nanoid!().replace("-", "").replace("_", "");
+                                let id = nanoid!().replace('-', "").replace('_', "");
                                 let mut tx = db.begin().await?;
 
                                 let res = sqlx::query::<_>(
@@ -67,7 +67,7 @@ pub fn warehouse_datas() -> Subscriber {
                                 )
                                 .bind(&id)
                                 .bind(&metadata.request_by)
-                                .bind(&event.created_at)
+                                .bind(event.created_at)
                                 .execute(&mut *tx)
                                 .await;
 
@@ -141,7 +141,7 @@ pub fn warehouse_datas() -> Subscriber {
                                     },
                                 };
 
-                                let data = match serde_json::to_value(&data) {
+                                let data = match serde_json::to_value(data) {
                                     Ok(data) => data,
                                     Err(e) => {
                                         errors.push(SubscirberHandlerError::new("warehouse-datas.query_builder.push_values.serde", e.to_string()));

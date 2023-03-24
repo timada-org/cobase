@@ -47,8 +47,8 @@ pub fn rooms() -> Subscriber {
                         )
                         .bind(&room.id)
                         .bind(&room.name)
-                        .bind(&room.user_id)
-                        .bind(&room.created_at)
+                        .bind(room.user_id)
+                        .bind(room.created_at)
                         .execute(&db)
                         .await?;
 

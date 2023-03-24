@@ -119,7 +119,7 @@ mod tests {
             .unwrap();
 
         assert_eq!(
-            read_import_data(&op, &warehouse.storage_paths[0])
+            read_import_data(op, &warehouse.storage_paths[0])
                 .await
                 .unwrap(),
             data_0
@@ -192,14 +192,14 @@ mod tests {
             .unwrap();
 
         assert_eq!(
-            read_import_data(&op, &warehouse.storage_paths[0])
+            read_import_data(op, &warehouse.storage_paths[0])
                 .await
                 .unwrap(),
             data_0
         );
 
         assert_eq!(
-            read_import_data(&op, &warehouse.storage_paths[1])
+            read_import_data(op, &warehouse.storage_paths[1])
                 .await
                 .unwrap(),
             data_1
@@ -280,7 +280,7 @@ mod tests {
             .unwrap();
 
         assert_eq!(
-            read_import_data(&op, &warehouse.storage_paths[0])
+            read_import_data(op, &warehouse.storage_paths[0])
                 .await
                 .unwrap(),
             data_0
