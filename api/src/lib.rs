@@ -121,7 +121,8 @@ impl App {
             .data(pool.clone())
             .data(pikva_client.clone())
             .data(storage.clone())
-            .subscribe(cobase::room::projection::rooms());
+            .subscribe(cobase::room::projection::rooms())
+            .subscribe(cobase::warehouse::projection::warehouse_datas());
 
         let producer = match evento.run(self.options.evento.delay).await {
             Ok(p) => p,

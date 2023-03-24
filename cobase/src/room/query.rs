@@ -21,10 +21,10 @@ impl Handler<ListRoomsQuery> for Query {
         let pool = self.pool.clone();
 
         async move {
-            let rooms =
-                sqlx::query_as!(Room, "SELECT * FROM rooms WHERE user_id = $1", &msg.user_id)
-                    .fetch_all(&pool)
-                    .await?;
+            let rooms = sqlx::query_as::<_, Room>("SELECT * FROM rooms WHERE user_id = $1")
+                .bind(&msg.user_id)
+                .fetch_all(&pool)
+                .await?;
 
             Ok(rooms)
         }

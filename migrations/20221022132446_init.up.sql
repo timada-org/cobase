@@ -41,5 +41,15 @@ CREATE TABLE IF NOT EXISTS rooms
 (
     id VARCHAR(21) NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    user_id UUID NOT NULL
+    user_id UUID NOT NULL,
+    created_at timestamptz NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS warehouses
+(
+    id VARCHAR(21) NOT NULL PRIMARY KEY,
+    user_id UUID NOT NULL,
+    created_at timestamptz NOT NULL
+);
+
+CREATE UNIQUE INDEX ON warehouses (user_id);

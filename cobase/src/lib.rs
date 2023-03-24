@@ -60,7 +60,9 @@ mod tests {
             .name(format!("cobase.test.{test_name}"))
             .data(pool.clone())
             .data(pikav_client.clone())
-            .subscribe(crate::room::projection::rooms());
+            .data(storage.clone())
+            .subscribe(crate::room::projection::rooms())
+            .subscribe(crate::warehouse::projection::warehouse_datas());
         let producer = evento.run(0).await.unwrap();
         let command = Command::new(evento.clone(), producer, storage.clone()).start();
         let query = Query::new(pool.clone()).start();

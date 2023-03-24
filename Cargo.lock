@@ -554,9 +554,9 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "chrono"
-version = "0.4.23"
+version = "0.4.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "16b0a3d9ed01224b22057780a37bb8c5dbfe1be8ba48678e7bf57ec4b385411f"
+checksum = "4e3c5919066adf22df73762e50cffcde3a758f2a848b113b586d1f86728b673b"
 dependencies = [
  "iana-time-zone",
  "num-integer",
@@ -613,6 +613,7 @@ version = "0.5.5"
 dependencies = [
  "actix",
  "actix-jwks",
+ "chrono",
  "config",
  "evento",
  "futures",
@@ -963,9 +964,9 @@ checksum = "0206175f82b8d6bf6652ff7d71a1e27fd2e4efde587fd368662814d6ec1d9ce0"
 
 [[package]]
 name = "evento"
-version = "0.4.8"
+version = "0.4.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ef51bfc2902081ab41863ca2c79763e6ae8603c715ae350ce73bdd839fdd8848"
+checksum = "af3b494f0702c6d6c4a608b5a32b740ee9264cae3981cd979c63f0ea5ae0ca3e"
 dependencies = [
  "actix",
  "actix-web",

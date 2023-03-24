@@ -55,7 +55,8 @@ mod tests {
             vec![projection::Room {
                 id,
                 name: "Central park".to_owned(),
-                user_id
+                user_id,
+                created_at: rooms[0].created_at.to_owned()
             }]
         );
     }
