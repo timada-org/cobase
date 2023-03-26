@@ -52,7 +52,7 @@ pub struct CommandResponse {
 #[derive(OpenApi)]
 #[openapi(
     paths(room::create_room, room::list_rooms, warehouse::import_data, warehouse::list_warehouses_data),
-    components(schemas(room::Room, room::CreateInput, warehouse::ImportDataInput, WarehouseData, CommandResponse, QueryResultWarehouseData, PageInfo, EdgeWarehouseData)),
+    components(schemas(room::Room, room::CreateRoomInput, warehouse::ImportDataWarehouseInput, WarehouseData, CommandResponse, QueryResultWarehouseData, PageInfo, EdgeWarehouseData)),
     tags(
         (name = "Cobase", description = "Cobase api endpoints.")
     )

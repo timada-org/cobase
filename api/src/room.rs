@@ -43,7 +43,7 @@ async fn list_rooms(
 
 #[derive(Deserialize, IntoParams, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct CreateInput {
+pub struct CreateRoomInput {
     #[schema(example = "My room name 1")]
     pub name: String,
 }
@@ -51,7 +51,7 @@ pub struct CreateInput {
 #[utoipa::path(
     tag = "cobase",
     context_path = "/api/rooms",
-    request_body=CreateInput,
+    request_body=CreateRoomInput,
     responses(
         (status = 200, description = "Create room did not result error", body = CommandResponse),
     )
@@ -59,7 +59,7 @@ pub struct CreateInput {
 #[post("/create")]
 async fn create_room(
     state: web::Data<AppState>,
-    input: web::Json<CreateInput>,
+    input: web::Json<CreateRoomInput>,
     payload: JwtPayload,
 ) -> HttpResponse {
     CommandResponse(

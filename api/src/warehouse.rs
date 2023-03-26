@@ -56,7 +56,7 @@ async fn list_warehouses_data(
 
 #[derive(Deserialize, IntoParams, ToSchema)]
 #[serde(rename_all = "camelCase")]
-pub struct ImportDataInput {
+pub struct ImportDataWarehouseInput {
     #[schema(value_type = Vec<Object>, example = "[{ \"_id\": 1, \"name\": \"john doe\" }]")]
     pub data: Vec<HashMap<String, Value>>,
 }
@@ -64,7 +64,7 @@ pub struct ImportDataInput {
 #[utoipa::path(
     tag = "cobase",
     context_path = "/api/warehouses",
-    request_body=ImportDataInput,
+    request_body=ImportDataWarehouseInput,
     responses(
         (status = 200, description = "Import data to wharehouse did not result error", body = CommandResponse),
     )
@@ -72,7 +72,7 @@ pub struct ImportDataInput {
 #[post("/import-data")]
 async fn import_data(
     state: web::Data<AppState>,
-    input: web::Json<ImportDataInput>,
+    input: web::Json<ImportDataWarehouseInput>,
     payload: JwtPayload,
 ) -> HttpResponse {
     CommandResponse(
