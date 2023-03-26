@@ -1,5 +1,8 @@
 use chrono::{DateTime, Utc};
-use evento::{query::Cursor, SubscirberHandlerError, Subscriber};
+use evento::{
+    query::{Cursor, Query as QueryAs},
+    SubscirberHandlerError, Subscriber,
+};
 use futures::FutureExt;
 use nanoid::nanoid;
 use opendal::Operator;
@@ -203,10 +206,11 @@ pub fn warehouse_data() -> Subscriber {
 
                             query_builder.build().execute(&db).await?;
 
-                            let warehouse_data = sqlx::query_as::<_, WarehouseData>(
-                                &format!("SELECT * FROM warehouse_data_{warehouse_id} WHERE key = ANY($1)"),
-                            )
+                            let res = QueryAs::<WarehouseData>::new(&format!(
+                                "SELECT * FROM warehouse_data_{warehouse_id} WHERE key = ANY($1)"
+                            ))
                             .bind(&data_keys[..])
+                            .forward(1000, None::<String>)
                             .fetch_all(&db)
                             .await?;
 
@@ -214,7 +218,7 @@ pub fn warehouse_data() -> Subscriber {
                                 user_id: metadata.request_by.to_owned(),
                                 topic: format!("warehouses/{}", warehouse_id),
                                 name: "data-imported".to_owned(),
-                                data: Some(serde_json::to_value(warehouse_data)?.into()),
+                                data: Some(serde_json::to_value(res)?.into()),
                                 metadata: None,
                             }]);
                         }
