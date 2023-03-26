@@ -1,7 +1,7 @@
 import { Component, createSignal, For, Match, Switch } from "solid-js";
 import { Provider as PikavProvider, useSubscribe } from "pikav/solid";
 import { Client } from "pikav";
-import { Group, CreateCommand } from "@timada/cobase-client";
+import { Room, CreateInput } from "@timada/cobase-client";
 
 import {
   QueryClient,
@@ -13,23 +13,23 @@ import {
 import { useConfig } from "./Config";
 import Api, { useApi } from "./Api";
 
-const Groups: Component = () => {
+const Rooms: Component = () => {
   const api = useApi();
   const queryClient = useQueryClient();
   const [name, setName] = createSignal("");
 
   const query = createQuery(
-    () => ["groups"],
-    async () => (await api.listGroups()).data
+    () => ["rooms"],
+    async () => (await api.listRooms()).data
   );
 
   const mutation = createMutation({
-    mutationFn: async (cmd: CreateCommand) => (await api.createGroup(cmd)).data,
+    mutationFn: async (cmd: CreateInput) => (await api.createRoom(cmd)).data,
   });
 
-  useSubscribe<Group>("groups/+", (event) => {
-    queryClient.setQueryData<Group[]>(
-      ["groups"],
+  useSubscribe<Room>("rooms/+", (event) => {
+    queryClient.setQueryData<Room[]>(
+      ["rooms"],
       (old) => old && [...old, event.data]
     );
   });
@@ -62,7 +62,7 @@ const Groups: Component = () => {
         </Match>
         <Match when={query.isSuccess}>
           <ul>
-            <For each={query.data}>{(group) => <li>{group.name}</li>}</For>
+            <For each={query.data}>{(room) => <li>{room.name}</li>}</For>
           </ul>
         </Match>
       </Switch>
@@ -87,7 +87,7 @@ const App: Component = () => {
     <Api>
       <PikavProvider client={pikavClient}>
         <QueryClientProvider client={queryClient}>
-          <Groups />
+          <Rooms />
         </QueryClientProvider>
       </PikavProvider>
     </Api>
