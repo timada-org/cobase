@@ -207,9 +207,9 @@ pub fn warehouse_data() -> Subscriber {
                             query_builder.build().execute(&db).await?;
 
                             let res = QueryAs::<WarehouseData>::new(&format!(
-                                "SELECT * FROM warehouse_data_{warehouse_id} WHERE (created_at = $1 OR updated_at = $1)"
+                                "SELECT * FROM warehouse_data_{warehouse_id} WHERE key = ANY($1)"
                             ))
-                            .bind(event.created_at)
+                            .bind(&data_keys[..])
                             .forward(1000, None::<String>)
                             .fetch_all(&db)
                             .await?;
