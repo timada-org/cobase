@@ -1,7 +1,8 @@
+use chrono::{DateTime, Utc};
 use evento::{Aggregate, Subscriber};
 use futures::FutureExt;
 use serde::{Deserialize, Serialize};
-use sqlx::PgPool;
+use sqlx::{FromRow, PgPool};
 use uuid::Uuid;
 
 use crate::{command::CommandMetadata, room::event::RoomEvent};
@@ -11,11 +12,12 @@ use super::{
     event::Created,
 };
 
-#[derive(Default, Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Default, Serialize, Deserialize, Clone, Debug, PartialEq, FromRow)]
 pub struct Room {
     pub id: String,
     pub name: String,
     pub user_id: Uuid,
+    pub created_at: DateTime<Utc>,
 }
 
 pub fn rooms() -> Subscriber {
@@ -36,23 +38,25 @@ pub fn rooms() -> Subscriber {
                         let room = Room {
                             id: aggregate::Room::to_id(event.aggregate_id),
                             name: data.name,
-                            user_id: Uuid::parse_str(&metadata.user_id)?,
+                            user_id: Uuid::parse_str(&metadata.request_by)?,
+                            created_at: event.created_at,
                         };
 
-                        sqlx::query!(
-                            "INSERT INTO rooms (id, name, user_id) VALUES ($1, $2, $3)",
-                            &room.id,
-                            &room.name,
-                            &room.user_id
+                        sqlx::query::<_>(
+                            "INSERT INTO rooms (id, name, user_id, created_at) VALUES ($1, $2, $3, $4)",
                         )
+                        .bind(&room.id)
+                        .bind(&room.name)
+                        .bind(room.user_id)
+                        .bind(room.created_at)
                         .execute(&db)
                         .await?;
 
                         pikav.publish(vec![pikav_client::Event {
-                            user_id: metadata.user_id,
+                            user_id: metadata.request_by,
                             topic: format!("rooms/{}", room.id),
                             name: "created".to_owned(),
-                            data: Some(serde_json::to_value(room).unwrap().into()),
+                            data: Some(serde_json::to_value(room)?.into()),
                             metadata: None,
                         }]);
                     }

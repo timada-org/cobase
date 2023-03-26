@@ -5,8 +5,8 @@ mod query;
 
 pub mod projection;
 
-pub use aggregate::Room;
 pub use command::*;
+pub use projection::Room;
 pub use query::*;
 
 #[cfg(test)]
@@ -55,7 +55,8 @@ mod tests {
             vec![projection::Room {
                 id,
                 name: "Central park".to_owned(),
-                user_id
+                user_id,
+                created_at: rooms[0].created_at.to_owned()
             }]
         );
     }

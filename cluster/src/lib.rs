@@ -1,5 +1,6 @@
 use timada_cobase_client::timada::{
-    cobase_server::CobaseServer, CreateRoomReply, CreateRoomRequest,
+    cobase_server::CobaseServer, CreateRoomReply, CreateRoomRequest, ImportDataWarehouseReply,
+    ImportDataWarehouseRequest,
 };
 use tonic::{transport::Server, Request, Response, Status};
 use tracing::info;
@@ -14,6 +15,13 @@ impl timada_cobase_client::timada::cobase_server::Cobase for Cobase {
         _request: Request<CreateRoomRequest>,
     ) -> Result<Response<CreateRoomReply>, Status> {
         Ok(Response::new(CreateRoomReply { success: true }))
+    }
+
+    async fn import_data(
+        &self,
+        _request: Request<ImportDataWarehouseRequest>,
+    ) -> Result<Response<ImportDataWarehouseReply>, Status> {
+        Ok(Response::new(ImportDataWarehouseReply { success: true }))
     }
 }
 

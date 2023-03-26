@@ -26,9 +26,6 @@ sqlx.reset:
 test: reset
 	cargo test
 
-prepare:
-	cargo sqlx prepare --merged
-
 openapi:
 	cargo run openapi -c configs/default.yml
 

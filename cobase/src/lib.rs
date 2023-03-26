@@ -1,6 +1,8 @@
 pub mod command;
 pub mod query;
 pub mod room;
+pub mod storage;
+pub mod warehouse;
 
 #[cfg(test)]
 mod tests {
@@ -11,7 +13,7 @@ mod tests {
     use sqlx::PgPool;
     use std::path::PathBuf;
 
-    use crate::{command::Command, query::Query};
+    use crate::{command::Command, query::Query, storage::Storage};
 
     #[derive(Deserialize, Clone)]
     pub struct PikavOptions {
@@ -52,14 +54,17 @@ mod tests {
         })
         .unwrap();
 
+        let storage = Storage::default().build().unwrap();
         let pool = PgPool::connect(&config.dsn).await.unwrap();
         let evento = PgEngine::new(pool.clone())
             .name(format!("cobase.test.{test_name}"))
             .data(pool.clone())
             .data(pikav_client.clone())
-            .subscribe(crate::room::projection::rooms());
+            .data(storage.clone())
+            .subscribe(crate::room::projection::rooms())
+            .subscribe(crate::warehouse::projection::warehouse_data());
         let producer = evento.run(0).await.unwrap();
-        let command = Command::new(evento.clone(), producer).start();
+        let command = Command::new(evento.clone(), producer, storage.clone()).start();
         let query = Query::new(pool.clone()).start();
 
         let mut ctx = Context::new();
@@ -69,6 +74,7 @@ mod tests {
         ctx.insert(evento);
         ctx.insert(query);
         ctx.insert(command);
+        ctx.insert(storage);
 
         ctx
     }

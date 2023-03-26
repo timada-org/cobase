@@ -2,17 +2,16 @@ use actix::{ActorFutureExt, Context, Handler, ResponseActFuture, WrapFuture};
 use evento::{CommandResult, Event};
 use nanoid::nanoid;
 use serde::Deserialize;
-use utoipa::{IntoParams, ToSchema};
 use uuid::Uuid;
 
 use crate::command::{Command, CommandInput, CommandMetadata};
 
 use super::{
+    aggregate::Room,
     event::{Created, RoomEvent},
-    Room,
 };
 
-#[derive(Deserialize, IntoParams, ToSchema)]
+#[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateCommand {
     pub name: String,
@@ -40,7 +39,7 @@ impl Handler<CommandInput<CreateCommand>> for Command {
                             name: msg.input.name,
                         })?
                         .metadata(CommandMetadata {
-                            user_id: msg.user_id,
+                            request_by: msg.user_id,
                             request_id: request_id.to_string(),
                         })?],
                     0,

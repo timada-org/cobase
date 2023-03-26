@@ -1,14 +1,13 @@
 use actix::{ActorFutureExt, Context, Handler, Message, ResponseActFuture, WrapFuture};
 use evento::CommandError;
 use serde::Deserialize;
-use utoipa::{IntoParams, ToSchema};
 use uuid::Uuid;
 
 use crate::query::Query;
 
 use super::projection::Room;
 
-#[derive(Message, Deserialize, IntoParams, ToSchema)]
+#[derive(Message, Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[rtype(result = "Result<Vec<Room>, CommandError>")]
 pub struct ListRoomsQuery {
@@ -22,10 +21,10 @@ impl Handler<ListRoomsQuery> for Query {
         let pool = self.pool.clone();
 
         async move {
-            let rooms =
-                sqlx::query_as!(Room, "SELECT * FROM rooms WHERE user_id = $1", &msg.user_id)
-                    .fetch_all(&pool)
-                    .await?;
+            let rooms = sqlx::query_as::<_, Room>("SELECT * FROM rooms WHERE user_id = $1")
+                .bind(msg.user_id)
+                .fetch_all(&pool)
+                .await?;
 
             Ok(rooms)
         }
