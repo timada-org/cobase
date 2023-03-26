@@ -600,7 +600,7 @@ dependencies = [
 
 [[package]]
 name = "cmd"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "actix-rt",
  "backoff",
@@ -620,7 +620,7 @@ dependencies = [
 
 [[package]]
 name = "cobase"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "actix",
  "actix-jwks",
@@ -644,7 +644,7 @@ dependencies = [
 
 [[package]]
 name = "cobase-api"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "actix",
  "actix-files",
@@ -665,7 +665,7 @@ dependencies = [
 
 [[package]]
 name = "cobase-cluster"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "cobase",
  "prost",
@@ -2995,7 +2995,7 @@ dependencies = [
 
 [[package]]
 name = "timada-cobase-client"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "prost",
  "prost-derive",
