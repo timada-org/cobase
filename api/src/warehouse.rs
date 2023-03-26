@@ -1,15 +1,58 @@
 use std::collections::HashMap;
 
 use actix_jwks::JwtPayload;
-use actix_web::{post, web, HttpResponse, Scope};
+use actix_web::{get, post, web, HttpResponse, Scope};
+use chrono::{DateTime, Utc};
 use cobase::command::CommandInput;
 use cobase::warehouse;
-use evento::CommandResponse;
-use serde::Deserialize;
+use evento::{query::QueryArgs, CommandError, CommandResponse};
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use utoipa::{IntoParams, ToSchema};
+use uuid::Uuid;
 
 use crate::AppState;
+
+#[derive(Default, Serialize, Deserialize, Clone, Debug, PartialEq, ToSchema)]
+pub struct WarehouseData {
+    #[schema(example = "V1StGXR8_Z5jdHi6B-myT")]
+    pub id: String,
+    #[schema(example = "your-custom-key")]
+    pub key: String,
+    #[schema(value_type = Vec<Object>, example = "{\"name\": \"My name\"}")]
+    pub data: Value,
+    #[schema(value_type = String, example = "2023-03-26T02:57:08.590084Z")]
+    pub created_at: DateTime<Utc>,
+    #[schema(value_type = Option<String>, example = "2023-03-26T02:57:08.590084Z")]
+    pub updated_at: Option<DateTime<Utc>>,
+}
+
+#[utoipa::path(
+    tag = "cobase",
+    context_path = "/api/warehouses",
+    params(
+        crate::openapi::QueryArgs
+    ),
+    responses(
+        (status = 200, description = "Get warehouse data did not result error", body = QueryResultWarehouseData),
+    )
+)]
+#[get("/data")]
+async fn list_warehouses_data(
+    state: web::Data<AppState>,
+    payload: JwtPayload,
+    query_args: web::Query<QueryArgs>,
+) -> Result<HttpResponse, CommandError> {
+    let rows = state
+        .query
+        .send(warehouse::ListWarehouseDataQuery {
+            user_id: Uuid::parse_str(&payload.subject)?,
+            query_args: query_args.0,
+        })
+        .await??;
+
+    Ok(HttpResponse::Ok().json(rows))
+}
 
 #[derive(Deserialize, IntoParams, ToSchema)]
 #[serde(rename_all = "camelCase")]
@@ -45,5 +88,7 @@ async fn import_data(
 }
 
 pub fn scope() -> Scope {
-    web::scope("/warehouses").service(import_data)
+    web::scope("/warehouses")
+        .service(list_warehouses_data)
+        .service(import_data)
 }

@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use evento::{SubscirberHandlerError, Subscriber};
+use evento::{query::Cursor, SubscirberHandlerError, Subscriber};
 use futures::FutureExt;
 use nanoid::nanoid;
 use opendal::Operator;
@@ -27,8 +27,43 @@ pub struct WarehouseData {
     pub updated_at: Option<DateTime<Utc>>,
 }
 
-pub fn warehouse_datas() -> Subscriber {
-    Subscriber::new("warehouse-datas")
+impl Cursor for WarehouseData {
+    fn keys() -> Vec<&'static str> {
+        vec!["created_at", "key"]
+    }
+
+    fn bind<'q, O>(
+        self,
+        query: sqlx::query::QueryAs<Postgres, O, sqlx::postgres::PgArguments>,
+    ) -> sqlx::query::QueryAs<Postgres, O, sqlx::postgres::PgArguments>
+    where
+        O: for<'r> FromRow<'r, <sqlx::Postgres as sqlx::Database>::Row>,
+        O: 'q + std::marker::Send,
+        O: 'q + Unpin,
+        O: 'q + Cursor,
+    {
+        query.bind(self.created_at).bind(self.key)
+    }
+
+    fn serialize(&self) -> Vec<String> {
+        vec![Self::serialize_utc(self.created_at), self.key.to_owned()]
+    }
+
+    fn deserialize(values: Vec<&str>) -> Result<Self, evento::query::CursorError> {
+        let mut values = values.iter();
+        let created_at = Self::deserialize_as_utc("created_at", values.next())?;
+        let key = Self::deserialize_as("key", values.next())?;
+
+        Ok(WarehouseData {
+            key,
+            created_at,
+            ..Default::default()
+        })
+    }
+}
+
+pub fn warehouse_data() -> Subscriber {
+    Subscriber::new("warehouse-data")
         .filter("warehouse/#")
         .handler(|event, ctx| {
             let db = ctx.0.read().extract::<PgPool>().clone();
@@ -46,7 +81,7 @@ pub fn warehouse_datas() -> Subscriber {
                         let import_data =
                             read_import_data(&op, &data.storage_path)
                                 .await
-                                .map_err(|e| SubscirberHandlerError::new("warehouse-datas.read_import_data", e.to_string()))?;
+                                .map_err(|e| SubscirberHandlerError::new("warehouse-data.read_import_data", e.to_string()))?;
 
 
                         let warehouse_id = sqlx::query_as::<_, (String,)>(
@@ -78,7 +113,7 @@ pub fn warehouse_datas() -> Subscriber {
 
                                 let res = sqlx::query::<_>(
                                     &format!(r#"
-                                    CREATE TABLE warehouse_datas_{id}
+                                    CREATE TABLE warehouse_data_{id}
                                     (
                                         id VARCHAR(21) NOT NULL PRIMARY KEY,
                                         key VARCHAR(50) NOT NULL,
@@ -97,7 +132,7 @@ pub fn warehouse_datas() -> Subscriber {
                                 }
 
                                 let res = sqlx::query::<_>(
-                                    &format!("CREATE UNIQUE INDEX ON warehouse_datas_{id} (key)"),
+                                    &format!("CREATE UNIQUE INDEX ON warehouse_data_{id} (key)"),
                                 )
                                 .execute(&mut *tx)
                                 .await;
@@ -115,7 +150,7 @@ pub fn warehouse_datas() -> Subscriber {
 
                         for import_data in import_data.chunks(1000).collect::<Vec<&[_]>>() {
                             let mut query_builder: QueryBuilder<Postgres> = QueryBuilder::new(
-                                format!("INSERT INTO warehouse_datas_{warehouse_id} (id, key, data, created_at) ")
+                                format!("INSERT INTO warehouse_data_{warehouse_id} (id, key, data, created_at) ")
                             );
 
                             let mut errors = Vec::new();
@@ -136,7 +171,7 @@ pub fn warehouse_datas() -> Subscriber {
                                 let key = match key {
                                     Some(key) => key,
                                     None => {
-                                        errors.push(SubscirberHandlerError::new("warehouse-datas.query_builder.push_values.id", "missing field _id"));
+                                        errors.push(SubscirberHandlerError::new("warehouse-data.query_builder.push_values.id", "missing field _id"));
                                         return
                                     },
                                 };
@@ -144,7 +179,7 @@ pub fn warehouse_datas() -> Subscriber {
                                 let data = match serde_json::to_value(data) {
                                     Ok(data) => data,
                                     Err(e) => {
-                                        errors.push(SubscirberHandlerError::new("warehouse-datas.query_builder.push_values.serde", e.to_string()));
+                                        errors.push(SubscirberHandlerError::new("warehouse-data.query_builder.push_values.serde", e.to_string()));
                                         return
                                     },
                                 };
@@ -168,8 +203,8 @@ pub fn warehouse_datas() -> Subscriber {
 
                             query_builder.build().execute(&db).await?;
 
-                            let warehouse_datas = sqlx::query_as::<_, WarehouseData>(
-                                &format!("SELECT * FROM warehouse_datas_{warehouse_id} WHERE key = ANY($1)"),
+                            let warehouse_data = sqlx::query_as::<_, WarehouseData>(
+                                &format!("SELECT * FROM warehouse_data_{warehouse_id} WHERE key = ANY($1)"),
                             )
                             .bind(&data_keys[..])
                             .fetch_all(&db)
@@ -179,7 +214,7 @@ pub fn warehouse_datas() -> Subscriber {
                                 user_id: metadata.request_by.to_owned(),
                                 topic: format!("warehouses/{}", warehouse_id),
                                 name: "data-imported".to_owned(),
-                                data: Some(serde_json::to_value(warehouse_datas)?.into()),
+                                data: Some(serde_json::to_value(warehouse_data)?.into()),
                                 metadata: None,
                             }]);
                         }

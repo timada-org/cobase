@@ -1,5 +1,8 @@
 use actix::{ActorFutureExt, Context, Handler, Message, ResponseActFuture, WrapFuture};
-use evento::CommandError;
+use evento::{
+    query::{Query as QueryAs, QueryArgs, QueryResult},
+    CommandError,
+};
 use serde::Deserialize;
 use uuid::Uuid;
 
@@ -9,15 +12,16 @@ use super::projection::WarehouseData;
 
 #[derive(Message, Deserialize)]
 #[serde(rename_all = "camelCase")]
-#[rtype(result = "Result<Vec<WarehouseData>, CommandError>")]
-pub struct ListWarehouseDatasQuery {
+#[rtype(result = "Result<QueryResult<WarehouseData>, CommandError>")]
+pub struct ListWarehouseDataQuery {
     pub user_id: Uuid,
+    pub query_args: QueryArgs,
 }
 
-impl Handler<ListWarehouseDatasQuery> for Query {
-    type Result = ResponseActFuture<Self, Result<Vec<WarehouseData>, CommandError>>;
+impl Handler<ListWarehouseDataQuery> for Query {
+    type Result = ResponseActFuture<Self, Result<QueryResult<WarehouseData>, CommandError>>;
 
-    fn handle(&mut self, msg: ListWarehouseDatasQuery, _ctx: &mut Context<Self>) -> Self::Result {
+    fn handle(&mut self, msg: ListWarehouseDataQuery, _ctx: &mut Context<Self>) -> Self::Result {
         let db = self.pool.clone();
 
         async move {
@@ -29,16 +33,17 @@ impl Handler<ListWarehouseDatasQuery> for Query {
 
             let warehouse_id = match warehouse_id {
                 Some((warehouse_id,)) => warehouse_id,
-                None => return Ok(vec![]),
+                None => return Ok(QueryResult::default()),
             };
 
-            let warehouse_datas = sqlx::query_as::<_, WarehouseData>(&format!(
-                "SELECT * FROM warehouse_datas_{warehouse_id} ORDER BY created_at, key"
+            let res = QueryAs::<WarehouseData>::new(&format!(
+                "SELECT * FROM warehouse_data_{warehouse_id}"
             ))
+            .build(msg.query_args)
             .fetch_all(&db)
             .await?;
 
-            Ok(warehouse_datas)
+            Ok(res)
         }
         .into_actor(self)
         .boxed_local()

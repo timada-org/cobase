@@ -13,6 +13,7 @@ pub use query::*;
 #[cfg(test)]
 mod tests {
     use actix::Addr;
+    use evento::query::QueryArgs;
     use evento::{CommandError, PgEvento};
     use opendal::Operator;
     use serde_json::json;
@@ -23,7 +24,7 @@ mod tests {
     use crate::{
         command::Command,
         tests::create_context,
-        warehouse::{projection, ImportDataCommand, ListWarehouseDatasQuery},
+        warehouse::{projection, ImportDataCommand, ListWarehouseDataQuery},
     };
 
     use super::aggregate::Warehouse;
@@ -127,36 +128,41 @@ mod tests {
 
         sleep(Duration::from_millis(300)).await;
 
-        let warehouse_datas = query
-            .send(ListWarehouseDatasQuery {
+        let warehouse_data = query
+            .send(ListWarehouseDataQuery {
                 user_id: user_1.to_owned(),
+                query_args: QueryArgs::default(),
             })
             .await
             .unwrap()
-            .unwrap();
+            .unwrap()
+            .edges
+            .into_iter()
+            .map(|edge| edge.node)
+            .collect::<Vec<_>>();
 
         assert_eq!(
-            warehouse_datas,
+            warehouse_data,
             vec![
                 projection::WarehouseData {
-                    id: warehouse_datas[0].id.to_owned(),
+                    id: warehouse_data[0].id.to_owned(),
                     key: "1".to_owned(),
                     data: serde_json::to_value(&data_0[0]).unwrap(),
-                    created_at: warehouse_datas[0].created_at.to_owned(),
-                    updated_at: warehouse_datas[0].updated_at.to_owned(),
+                    created_at: warehouse_data[0].created_at.to_owned(),
+                    updated_at: warehouse_data[0].updated_at.to_owned(),
                 },
                 projection::WarehouseData {
-                    id: warehouse_datas[1].id.to_owned(),
+                    id: warehouse_data[1].id.to_owned(),
                     key: "2".to_owned(),
                     data: serde_json::to_value(&data_0[1]).unwrap(),
-                    created_at: warehouse_datas[1].created_at.to_owned(),
-                    updated_at: warehouse_datas[1].updated_at.to_owned(),
+                    created_at: warehouse_data[1].created_at.to_owned(),
+                    updated_at: warehouse_data[1].updated_at.to_owned(),
                 }
             ]
         );
 
-        assert!(warehouse_datas[0].updated_at.is_none());
-        assert!(warehouse_datas[1].updated_at.is_none());
+        assert!(warehouse_data[0].updated_at.is_none());
+        assert!(warehouse_data[1].updated_at.is_none());
 
         let data_1 = vec![
             serde_json::from_value(json!({
@@ -207,44 +213,49 @@ mod tests {
 
         sleep(Duration::from_millis(300)).await;
 
-        let warehouse_datas = query
-            .send(ListWarehouseDatasQuery {
+        let warehouse_data = query
+            .send(ListWarehouseDataQuery {
                 user_id: user_1.to_owned(),
+                query_args: QueryArgs::default(),
             })
             .await
             .unwrap()
-            .unwrap();
+            .unwrap()
+            .edges
+            .into_iter()
+            .map(|edge| edge.node)
+            .collect::<Vec<_>>();
 
         assert_eq!(
-            warehouse_datas,
+            warehouse_data,
             vec![
                 projection::WarehouseData {
-                    id: warehouse_datas[0].id.to_owned(),
+                    id: warehouse_data[0].id.to_owned(),
                     key: "1".to_owned(),
                     data: serde_json::to_value(&data_0[0]).unwrap(),
-                    created_at: warehouse_datas[0].created_at.to_owned(),
-                    updated_at: warehouse_datas[0].updated_at.to_owned(),
+                    created_at: warehouse_data[0].created_at.to_owned(),
+                    updated_at: warehouse_data[0].updated_at.to_owned(),
                 },
                 projection::WarehouseData {
-                    id: warehouse_datas[1].id.to_owned(),
+                    id: warehouse_data[1].id.to_owned(),
                     key: "2".to_owned(),
                     data: serde_json::to_value(&data_1[0]).unwrap(),
-                    created_at: warehouse_datas[1].created_at.to_owned(),
-                    updated_at: warehouse_datas[1].updated_at.to_owned(),
+                    created_at: warehouse_data[1].created_at.to_owned(),
+                    updated_at: warehouse_data[1].updated_at.to_owned(),
                 },
                 projection::WarehouseData {
-                    id: warehouse_datas[2].id.to_owned(),
+                    id: warehouse_data[2].id.to_owned(),
                     key: "3".to_owned(),
                     data: serde_json::to_value(&data_1[1]).unwrap(),
-                    created_at: warehouse_datas[2].created_at.to_owned(),
-                    updated_at: warehouse_datas[2].updated_at.to_owned(),
+                    created_at: warehouse_data[2].created_at.to_owned(),
+                    updated_at: warehouse_data[2].updated_at.to_owned(),
                 }
             ]
         );
 
-        assert!(warehouse_datas[0].updated_at.is_none());
-        assert!(warehouse_datas[1].updated_at.is_some());
-        assert!(warehouse_datas[2].updated_at.is_none());
+        assert!(warehouse_data[0].updated_at.is_none());
+        assert!(warehouse_data[1].updated_at.is_some());
+        assert!(warehouse_data[2].updated_at.is_none());
 
         let data_0 = vec![
             serde_json::from_value(json!({
@@ -288,30 +299,35 @@ mod tests {
 
         sleep(Duration::from_millis(300)).await;
 
-        let warehouse_datas = query
-            .send(ListWarehouseDatasQuery {
+        let warehouse_data = query
+            .send(ListWarehouseDataQuery {
                 user_id: user_2.to_owned(),
+                query_args: QueryArgs::default(),
             })
             .await
             .unwrap()
-            .unwrap();
+            .unwrap()
+            .edges
+            .into_iter()
+            .map(|edge| edge.node)
+            .collect::<Vec<_>>();
 
         assert_eq!(
-            warehouse_datas,
+            warehouse_data,
             vec![
                 projection::WarehouseData {
-                    id: warehouse_datas[0].id.to_owned(),
+                    id: warehouse_data[0].id.to_owned(),
                     key: "1".to_owned(),
                     data: serde_json::to_value(&data_0[0]).unwrap(),
-                    created_at: warehouse_datas[0].created_at.to_owned(),
-                    updated_at: warehouse_datas[0].updated_at.to_owned(),
+                    created_at: warehouse_data[0].created_at.to_owned(),
+                    updated_at: warehouse_data[0].updated_at.to_owned(),
                 },
                 projection::WarehouseData {
-                    id: warehouse_datas[1].id.to_owned(),
+                    id: warehouse_data[1].id.to_owned(),
                     key: "2".to_owned(),
                     data: serde_json::to_value(&data_0[1]).unwrap(),
-                    created_at: warehouse_datas[1].created_at.to_owned(),
-                    updated_at: warehouse_datas[1].updated_at.to_owned(),
+                    created_at: warehouse_data[1].created_at.to_owned(),
+                    updated_at: warehouse_data[1].updated_at.to_owned(),
                 },
             ]
         );

@@ -62,7 +62,7 @@ mod tests {
             .data(pikav_client.clone())
             .data(storage.clone())
             .subscribe(crate::room::projection::rooms())
-            .subscribe(crate::warehouse::projection::warehouse_datas());
+            .subscribe(crate::warehouse::projection::warehouse_data());
         let producer = evento.run(0).await.unwrap();
         let command = Command::new(evento.clone(), producer, storage.clone()).start();
         let query = Query::new(pool.clone()).start();
