@@ -57,7 +57,7 @@ async fn list_warehouses_data(
 #[derive(Deserialize, IntoParams, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct ImportDataInput {
-    #[schema(value_type = Vec<Object>)]
+    #[schema(value_type = Vec<Object>, example = "[{ \"_id\": 1, \"name\": \"john doe\" }]")]
     pub data: Vec<HashMap<String, Value>>,
 }
 
