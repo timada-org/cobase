@@ -1,7 +1,7 @@
 import { Component, createSignal, For, Match, Switch } from "solid-js";
 import { Provider as PikavProvider, useSubscribe } from "pikav/solid";
 import { Client } from "pikav";
-import { Room, CreateInput } from "@timada/cobase-client";
+import { Room, CreateRoomInput } from "@timada/cobase-client";
 
 import {
   QueryClient,
@@ -24,7 +24,8 @@ const Rooms: Component = () => {
   );
 
   const mutation = createMutation({
-    mutationFn: async (cmd: CreateInput) => (await api.createRoom(cmd)).data,
+    mutationFn: async (cmd: CreateRoomInput) =>
+      (await api.createRoom(cmd)).data,
   });
 
   useSubscribe<Room>("rooms/+", (event) => {
