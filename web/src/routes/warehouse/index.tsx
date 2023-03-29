@@ -19,7 +19,7 @@ const Index: Component = () => {
     <Suspense fallback="Loading...">
       <ul>
         <For each={listData()?.edges}>
-          {(data) => <li>{JSON.stringify(data.node)}</li>}
+          {(data) => <li>{JSON.stringify(data.node.data)}</li>}
         </For>
       </ul>
     </Suspense>
