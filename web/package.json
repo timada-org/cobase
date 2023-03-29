@@ -13,7 +13,8 @@
   },
   "license": "AGPL3",
   "devDependencies": {
-    "@typescript-eslint/parser": "^5.56.0",
+    "@types/node": "^18.15.11",
+    "@typescript-eslint/parser": "^5.57.0",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-jsx-a11y": "^6.7.1",
@@ -25,9 +26,9 @@
     "vite-plugin-solid": "^2.6.1"
   },
   "dependencies": {
-    "@tanstack/solid-query": "^4.27.0",
+    "@solidjs/router": "^0.8.2",
     "@timada/cobase-client": "^0.6.2",
-    "pikav": "^0.3.2",
+    "pikav": "^0.3.3",
     "solid-js": "^1.6.15"
   }
 }

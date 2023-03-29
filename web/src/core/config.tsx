@@ -1,6 +1,7 @@
 import {
   createContext,
   createResource,
+  ErrorBoundary,
   Match,
   ParentComponent,
   Switch,
@@ -29,7 +30,7 @@ export function useConfig(): AppConfig {
   return useContext(Context);
 }
 
-const Config: ParentComponent = (props) => {
+const Component: ParentComponent = (props) => {
   const [config] = createResource<AppConfig>(() =>
     fetch(`${import.meta.env.BASE_URL}config.json`).then((response) =>
       response.json()
@@ -53,4 +54,10 @@ const Config: ParentComponent = (props) => {
   );
 };
 
-export default Config;
+export const Config: ParentComponent = (props) => {
+  return (
+    <ErrorBoundary fallback="">
+      <Component children={props.children} />
+    </ErrorBoundary>
+  );
+};
