@@ -1,28 +1,75 @@
-import { Component, createResource, For, Suspense } from "solid-js";
+import { Component, createResource, For } from "solid-js";
 import { Route } from "@solidjs/router";
 import NotFoundRoute from "@/components/NotFoundRoute";
 import path from "./path";
 import DataId from "./[data-id]";
 import { useApi } from "@/core/api";
+import {
+  EdgeWarehouseData,
+  QueryResultWarehouseData,
+} from "@timada/cobase-client";
+import { useSubscribe } from "pikav/solid";
 
 const Index: Component = () => {
   const api = useApi();
-  const [listData] = createResource(
-    async () => (await api.listWarehousesData()).data
+  const [query, { mutate, refetch }] = createResource<QueryResultWarehouseData>(
+    async (_, old) => {
+      if (old.value && !old.value.page_info.has_next_page) {
+        return old.value;
+      }
+
+      const { data } = await api.listWarehousesData(
+        40,
+        old.value?.page_info.end_cursor as string | undefined
+      );
+
+      if (!old.value) {
+        return data;
+      }
+
+      return { ...data, edges: old.value.edges.concat(data.edges) };
+    }
   );
 
-  // useSubscribe<Room>("rooms/+", (event) => {
-  //   mutateRooms((old) => old && [...old, event.data]);
-  // });
+  useSubscribe<EdgeWarehouseData[]>("warehouses/+", (event) => {
+    if (event.name !== "data-imported") {
+      return;
+    }
+
+    mutate((old) => {
+      if (!old) {
+        return old;
+      }
+
+      let edges = Array.from(
+        [...old.edges, ...event.data]
+          .reduce(
+            (acc, o) => acc.set(o.node.id, o),
+            new Map<string, EdgeWarehouseData>()
+          )
+          .values()
+      );
+
+      if (old.page_info.has_next_page) {
+        edges = edges.slice(0, old.edges.length);
+      }
+
+      return { ...old, edges };
+    });
+  });
 
   return (
-    <Suspense fallback="Loading...">
+    <>
       <ul>
-        <For each={listData()?.edges}>
+        <For each={query()?.edges}>
           {(data) => <li>{JSON.stringify(data.node.data)}</li>}
         </For>
       </ul>
-    </Suspense>
+
+      <button disabled={query.loading} onClick={async () => await refetch()}>
+        Load more
+      </button>
+    </>
   );
 };
 
