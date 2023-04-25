@@ -29,8 +29,8 @@ importers:
         specifier: ^0.8.2
         version: 0.8.2(solid-js@1.7.3)
       '@timada/cobase-client':
-        specifier: ^0.6.2
-        version: 0.6.2
+        specifier: ^0.7.1
+        version: 0.7.1
       pikav:
         specifier: ^0.3.3
         version: 0.3.3(solid-js@1.7.3)
@@ -711,8 +711,8 @@ packages:
       solid-js: 1.7.3
     dev: false
 
-  /@timada/cobase-client@0.6.2:
-    resolution: {integrity: sha512-iCbvCQq+E9eIEBeLpJbdZVOijdAtLeyoCr4OkbvbVrCqaczGnfjl13Jm3oXYi7TEirwlQTxojKw1F+w0UP16dw==}
+  /@timada/cobase-client@0.7.1:
+    resolution: {integrity: sha512-oDcWIIRr9QWbEYVUR0ET0XUQmdI0ISgHs1BPY/arrlQu1oSEsreQnlnz88oguMFGCLLZULHshZxLzpoZ/mYmNg==}
     dependencies:
       axios: 0.26.1
     transitivePeerDependencies:

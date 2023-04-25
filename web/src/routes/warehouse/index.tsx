@@ -18,10 +18,10 @@ const Index: Component = () => {
         return old.value;
       }
 
-      const { data } = await api.listWarehousesData(
-        40,
-        old.value?.page_info.end_cursor as string | undefined
-      );
+      const { data } = await api.listWarehousesData({
+        first: 40,
+        after: old.value?.page_info.end_cursor as string | undefined,
+      });
 
       if (!old.value) {
         return data;

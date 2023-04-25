@@ -2,9 +2,9 @@ import {
   createContext,
   createResource,
   ErrorBoundary,
-  Match,
   ParentComponent,
-  Switch,
+  Show,
+  Suspense,
   useContext,
 } from "solid-js";
 
@@ -38,26 +38,20 @@ const Component: ParentComponent = (props) => {
   );
 
   return (
-    <Switch>
-      <Match when={config.loading}>
-        <p>Initialize...</p>
-      </Match>
-      <Match when={config.error}>
-        <p>Error: {config.error.message}</p>
-      </Match>
-      <Match when={config()}>
-        <Context.Provider value={config() as AppConfig}>
-          {props.children}
-        </Context.Provider>
-      </Match>
-    </Switch>
+    <Show when={config()}>
+      <Context.Provider value={config() as AppConfig}>
+        {props.children}
+      </Context.Provider>
+    </Show>
   );
 };
 
 export const Config: ParentComponent = (props) => {
   return (
     <ErrorBoundary fallback="">
-      <Component children={props.children} />
+      <Suspense>
+        <Component children={props.children} />
+      </Suspense>
     </ErrorBoundary>
   );
 };
