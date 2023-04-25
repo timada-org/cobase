@@ -1,18 +1,15 @@
 [package]
 name = "cobase-cluster"
-version = "0.7.0"
+version = "0.7.1"
 edition = "2021"
 publish = false
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-cobase = { path = "../cobase" }
-timada-cobase-client = { path = "../cobase-client" }
-
+cobase = { path = "../cobase", version = "0.7.1" }
+timada-cobase-client = { path = "../cobase-client", version = "0.7.1" }
 tonic = { version = "0.9.1", features = ["tls"] }
 prost = "0.11.9"
 tracing = "0.1.37"
-tokio = { version = "1.27.0", features = [ "rt-multi-thread", "time", "fs", "macros", "net"] }
+tokio = { version = "1.27.0", features = [ "rt-multi-thread", "time", "fs", "macros", "net" ] }
 serde = { version = "1.0.160", features = ["derive"] }
 serde_json = "1.0.96"
