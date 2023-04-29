@@ -686,7 +686,6 @@ dependencies = [
  "config",
  "evento",
  "futures",
- "jsonm",
  "nanoid",
  "opendal",
  "parse-display",
@@ -1564,17 +1563,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "jsonm"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aef5e879b2495af9898cd6bb696fe5aa6380b345971c4758da7923179739ac9b"
-dependencies = [
- "regex",
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "jsonwebtoken"
 version = "8.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1855,9 +1843,9 @@ checksum = "b7e5500299e16ebb147ae15a00a942af264cf3688f47923b8fc2cd5858f23ad3"
 
 [[package]]
 name = "opendal"
-version = "0.31.1"
+version = "0.33.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6a1dcac1cbcf8ff424cef15b62d55bc8128632dffcf57404bf7774e2fca1b48b"
+checksum = "e34a1d6d7b1bfb80850b43609498bf35cfdf90c2724f376ecfde81d991d12f62"
 dependencies = [
  "anyhow",
  "async-compat",
@@ -2733,7 +2721,6 @@ version = "1.0.96"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "057d394a50403bcac12672b2b18fb387ab6d289d957dab67dd201875391e52f1"
 dependencies = [
- "indexmap",
  "itoa",
  "ryu",
  "serde",
