@@ -1,13 +1,13 @@
 [package]
 name = "cmd"
-version = "0.7.1"
+version = "0.8.0"
 edition = "2021"
 publish = false
 
 [dependencies]
-cobase = { path = "../cobase", version = "0.7.1" }
-cobase-api = { path = "../api", version = "0.7.1" }
-cobase-cluster = { path = "../cluster", version = "0.7.1" }
+cobase = { path = "../cobase", version = "0.8.0" }
+cobase-api = { path = "../api", version = "0.8.0" }
+cobase-cluster = { path = "../cluster", version = "0.8.0" }
 config = "0.13.3"
 serde = "1.0.160"
 serde_json = "1.0.96"

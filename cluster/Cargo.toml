@@ -1,12 +1,12 @@
 [package]
 name = "cobase-cluster"
-version = "0.7.1"
+version = "0.8.0"
 edition = "2021"
 publish = false
 
 [dependencies]
-cobase = { path = "../cobase", version = "0.7.1" }
-timada-cobase-client = { path = "../cobase-client", version = "0.7.1" }
+cobase = { path = "../cobase", version = "0.8.0" }
+timada-cobase-client = { path = "../cobase-client", version = "0.8.0" }
 tonic = { version = "0.9.1", features = ["tls"] }
 prost = "0.11.9"
 tracing = "0.1.37"
