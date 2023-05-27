@@ -18,8 +18,7 @@ pikav-client = "0.15.2"
 sqlx = { version = "0.6.3", features = ["runtime-actix-rustls", "postgres", "chrono", "uuid", "json", "offline"] }
 futures = "0.3.28"
 validator = { version = "0.16.0", features = ["derive"] }
-opendal = "0.31.0"
-jsonm = "0.2.0"
+opendal = "0.33.1"
 chrono = { version = "0.4.24", default-features = false, features = ["clock", "serde"] }
 
 [dependencies.uuid]

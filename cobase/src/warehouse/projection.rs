@@ -217,7 +217,7 @@ pub fn warehouse_data() -> Subscriber {
                             pikav.publish(vec![pikav_client::Event {
                                 user_id: metadata.request_by.to_owned(),
                                 topic: format!("warehouses/{}", warehouse_id),
-                                name: "data-imported".to_owned(),
+                                name: "updated".to_owned(),
                                 data: Some(serde_json::to_value(res.edges)?.into()),
                                 metadata: None,
                             }]);
